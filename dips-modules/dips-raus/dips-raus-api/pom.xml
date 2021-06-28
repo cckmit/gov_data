@@ -1,0 +1,25 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <parent>
+    <groupId>com.cloud</groupId>
+    <artifactId>dips-raus</artifactId>
+    <version>${dips.version}</version>
+  </parent>
+  
+  
+	
+  <artifactId>dips-raus-api</artifactId>
+  <version>${dips.version}</version>
+	<packaging>jar</packaging>
+	<name>dips-raus-api</name>
+	<description>web用户日志记录模块</description>
+  
+  <dependencies>
+		<!--core 工具类-->
+		<dependency>
+			<groupId>com.cloud</groupId>
+			<artifactId>dips-common-core</artifactId>
+			<version>${dips.version}</version>
+		</dependency>
+	</dependencies>
+</project>

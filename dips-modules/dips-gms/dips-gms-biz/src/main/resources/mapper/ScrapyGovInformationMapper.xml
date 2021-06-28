@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.cloud.dips.gov.mapper.ScrapyGovInformationMapper">
+	<resultMap type="com.cloud.dips.gov.api.entity.ScrapyGovInformation" id="scrapyGovInformationMap">
+		<result property="id" column="id" />
+		<result property="tag" column="tag" />
+		<result property="title" column="title" />
+		<result property="publishTime" column="publish_time" />
+		<result property="image" column="image" />
+		<result property="summary" column="summary" />
+		<result property="source" column="source" />
+		<result property="text" column="text" />
+		<result property="author" column="author" />
+		<result property="url" column="url" />
+		<result property="view" column="view" />
+		<result property="tag" column="tag" />
+		<result property="delFlag" column="is_deleted" />
+		<result property="creatorId" column="creator_id" />
+		<result property="region" column="region" />
+		<result column="examine_status" property="examineStatus" />
+		<result column="examine_user_id" property="examineUser" />
+		<result column="examine_date" property="examineDate" />
+		<result column="retreat_count" property="retreatCount" />
+		<result column="retreat_user" property="retreatUser" />
+		<result column="retreat_content" property="retreatContent" />
+		<result column="processor_id" property="processorId" />
+	</resultMap>
+
+	<select id="scrapyGovInformationPage" resultMap="scrapyGovInformationMap">
+		SELECT
+			f.id,
+			f.title,
+			f.source,
+			f.publish_time,
+			f.is_deleted
+		FROM
+			scrapy_gov_information AS f
+		LEFT JOIN gov_user AS u ON u.id = f.creator_id
+		WHERE f.is_deleted != '1'
+		<if test="title != null and title != ''">
+			AND f.title LIKE CONCAT('%',#{title},'%')
+		</if>
+		<if test="username != null and username != ''">
+			AND u.username = #{username}
+		</if>
+		<if test="exceptExamined != null and exceptExamined != ''">
+		  <if test="exceptExamined == 'true'">
+			AND f.is_deleted != '2'
+		  </if>
+		  <if test="exceptExamined == 'false'">
+            AND f.is_deleted = '2'
+          </if>
+		</if>
+		ORDER BY
+		<if test="prop != null and prop != ''">
+            <if test="'publishTime' == prop">
+                <if test="order == 'descending'">
+                    f.publish_time DESC,
+                </if>
+                <if test="order == 'ascending'">
+                    f.publish_time ASC,
+                </if>
+            </if>
+        </if>
+		f.is_deleted, f.id DESC
+	</select>
+
+	<select id="getRecyclePage" resultMap="scrapyGovInformationMap">
+		SELECT
+			*
+		FROM
+			scrapy_gov_information AS f
+		LEFT JOIN gov_user AS u ON u.id = f.creator_id
+		WHERE f.is_deleted = '1'
+		<if test="title != null and title != ''">
+			AND f.title LIKE CONCAT('%',#{title},'%')
+		</if>
+		<if test="username != null and username != ''">
+			AND u.username = #{username}
+		</if>
+		ORDER BY f.id DESC
+	</select>
+
+	<select id="recycleRecover">
+		UPDATE scrapy_gov_information AS f SET f.is_deleted = '0' WHERE f.id = #{id}
+	</select>
+
+</mapper>

@@ -1,0 +1,3 @@
+org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
+  com.cloud.dips.theme.api.feign.fallback.RemoteContactServiceFallbackImpl,\
+  com.cloud.dips.theme.api.feign.factory.RemoteContactServiceFallbackFactory

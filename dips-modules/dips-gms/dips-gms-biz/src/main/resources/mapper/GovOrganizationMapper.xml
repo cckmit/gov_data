@@ -1,0 +1,169 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.cloud.dips.gov.mapper.GovOrganizationMapper">
+
+	<!-- 发布机构id name结果集 -->
+	<resultMap id="organizationCommonVOMap" type="com.cloud.dips.gov.api.vo.CommonVO">
+		<result column="id" property="commonId" />
+		<result column="name" property="commonName" />
+	</resultMap>
+
+	<resultMap type="com.cloud.dips.gov.api.vo.OrganizationVO" id="selectPageMap">
+		<result property="id" column="id" />
+		<result property="name" column="name" />
+		<result property="level" column="level" />
+		<result property="classification" column="classification" />
+		<result property="classificationName" column="classificationName" />
+		<result property="url" column="url" />
+		<result property="introduce" column="introduce" />
+		<result property="address" column="address" />
+		<result property="creatorId" column="creator_id" />
+		<result property="creatorName" column="creatorName" />
+        <result property="createTime" column="create_time"/>
+		<association property="next" select="selectOrganizationNext" column="id">
+		</association>
+		<association property="prev" select="selectOrganizationPrev" column="id">
+		</association>
+		<collection property="tagList" select="selectTag" column="id">
+		</collection>
+	</resultMap>
+
+	<resultMap type="com.cloud.dips.gov.api.vo.CommonVO" id="commonTag">
+		<result property="commonId" column="tagId" />
+		<result property="commonName" column="name" />
+	</resultMap>
+
+	<resultMap id="organizationTagOrPage" type="com.cloud.dips.gov.api.vo.OrganizationVO">
+		<id property="id" column="id" />
+		<result property="name" column="name" />
+	</resultMap>
+
+	<select id="selectByTagId" resultType="com.cloud.dips.gov.api.vo.OrganizationVO">
+		SELECT
+		o.id as id,
+		o.name as name
+		FROM
+		gov_tag_relation AS gtr
+		LEFT JOIN gov_tag_relation_type AS rt ON rt.type_number = 'def' AND gtr.type_id = rt.id
+		LEFT JOIN gov_tag AS gt ON gt.id = gtr.tag_id
+		LEFT JOIN gov_policy_organization AS o ON gtr.relation_id = o.id
+		WHERE gtr.node = 'gov_organization' AND gt.id = #{tagId} AND o.is_deleted = '0'
+	</select>
+
+	<select id="selectOrPage" resultMap="selectPageMap">
+		SELECT
+			org.id,
+			org.name,
+			org.level,
+			org.classification,
+			org.url,
+			org.create_time,
+			org.introduce,
+			org.address,
+			gdv.value AS classificationName,
+			org.creator_id,
+			u.username AS creatorName
+		FROM gov_policy_organization as org
+		LEFT JOIN gov_dict_value as gdv ON org.classification = gdv.key AND gdv.dict_id = (SELECT id FROM gov_dict WHERE number = 'ORGANIZATION_CLASSIFICATION')
+		LEFT JOIN gov_user AS u ON u.id = org.creator_id
+		WHERE org.is_deleted = '0'
+		<if test="level != null and level != ''">
+			AND org.level = #{level}
+		</if>
+		<if test="name != null and name != ''">
+			AND org.name LIKE CONCAT('%',#{name},'%')
+		</if>
+		<if test="startTime != null and startTime != ''">
+            AND org.create_time &gt;= #{startTime}
+        </if>
+        <if test="endTime != null and endTime != ''">
+            AND org.create_time &lt;= #{endTime}
+        </if>
+		<if test="username != null and username != ''">
+			AND u.username = #{username}
+		</if>
+		ORDER BY 
+		<if test="prop != null and prop != ''">
+            <if test="'createTime' == prop">
+                <if test="order == 'descending'">
+                    org.create_time DESC,
+                </if>
+                <if test="order == 'ascending'">
+                    org.create_time ASC,
+                </if>
+            </if>
+        </if>
+		id DESC
+	</select>
+
+	<select id="selectRecyclePage" resultMap="selectPageMap">
+		SELECT
+			org.id,
+			org.name,
+			org.level,
+			org.classification,
+			org.url,
+			org.introduce,
+			org.address,
+			gdv.value AS classificationName,
+			org.creator_id,
+			u.username AS creatorName
+		FROM gov_policy_organization AS org
+		LEFT JOIN gov_dict_value as gdv ON org.classification = gdv.key AND gdv.dict_id = (SELECT id FROM gov_dict WHERE number = 'ORGANIZATION_CLASSIFICATION')
+		LEFT JOIN gov_user AS u ON u.id = org.creator_id
+		WHERE org.is_deleted = '1'
+		<if test="name != null and name != ''">
+			AND org.name LIKE CONCAT('%',#{name},'%')
+		</if>
+		<if test="username != null and username != ''">
+			AND u.username = #{username}
+		</if>
+		ORDER BY id DESC
+	</select>
+
+	<select id="selectTag" resultMap="commonTag">
+		SELECT
+            gt.id AS tagId,
+            gt.name
+		FROM
+			gov_tag_relation AS gtr
+		LEFT JOIN gov_tag_relation_type AS rt ON rt.type_number = 'def'
+		LEFT JOIN gov_tag AS gt ON gt.id = gtr.tag_id
+		WHERE gtr.node = 'gov_organization' AND gtr.relation_id = #{id} AND gtr.type_id = rt.id
+	</select>
+
+	<select id="selectOrganizationNext" resultMap="organizationCommonVOMap">
+		SELECT
+			org.id,
+			org.name
+		FROM
+			gov_policy_organization as org
+		WHERE
+			org.id &gt; #{id} AND org.is_deleted = '0'
+		ORDER BY
+			org.id ASC LIMIT 1
+	</select>
+	<select id="selectOrganizationPrev" resultMap="organizationCommonVOMap">
+		SELECT
+			org.id,
+			org.name
+		FROM
+			gov_policy_organization as org
+		WHERE
+			org.id &lt; #{id} AND org.is_deleted = '0'
+		ORDER BY
+			org.id DESC LIMIT 1
+	</select>
+
+	<select id="repeat" resultType="com.cloud.dips.gov.api.entity.GovOrganization">
+		SELECT
+			id,
+			name
+		FROM
+			gov_policy_organization
+		WHERE
+			is_deleted = '0' AND name = #{title}
+	</select>
+
+</mapper>

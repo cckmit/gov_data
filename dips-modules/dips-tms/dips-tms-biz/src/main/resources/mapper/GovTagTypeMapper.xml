@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+/*
+ *
+ * Copyright (c) 2018-2025, ZB All rights reserved.
+ *
+ * Author: ZB
+ *
+ */
+  -->
+
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.cloud.dips.tag.mapper.GovTagTypeMapper">
+	<!-- 通用查询映射结果 -->
+	<resultMap id="BaseResultMap" type="com.cloud.dips.tag.api.entity.GovTagType">
+		<id column="id" property="typeId"/>
+		<result column="parent_id" property="parentId"/>
+		<result column="name" property="name"/>
+		<result column="create_time" property="createTime"/>
+	</resultMap>
+
+	<!-- govTagVo结果集 -->
+	<resultMap id="govTagTypeVoResultMap" type="com.cloud.dips.tag.api.vo.GovTagTypeVO">
+		<id column="id" property="typeId"/>
+		<result column="parent_id" property="parentId"/>
+		<result column="parentName" property="parentName"/>
+		<result column="name" property="name"/>
+		<result column="create_time" property="createTime"/>
+		<collection property="children" select="selectTagType" column="id" />
+	</resultMap>
+
+	<select id="selectParents" resultMap="govTagTypeVoResultMap">
+		SELECT
+			*
+        FROM
+            gov_tag_type AS t
+        WHERE
+			t.parent_id = 0
+    </select>
+
+	<select id="selectTagType" resultMap="govTagTypeVoResultMap">
+		SELECT
+			*
+		FROM
+			gov_tag_type AS t
+		WHERE
+			t.parent_id = #{id}
+	</select>
+	
+	<select id="selectTypeVoPage" resultMap="govTagTypeVoResultMap">
+		SELECT
+			t1.*
+        FROM
+            gov_tag_type AS t1
+        WHERE
+        	t1.parent_id &lt;= 0
+        <if test="name != null and name != ''">
+			and t1.name LIKE CONCAT('%',#{name},'%')
+		</if>
+    </select>
+	
+</mapper>

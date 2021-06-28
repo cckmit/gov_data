@@ -1,0 +1,122 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.cloud.dips.raus.mapper.GovPolicyGeneralApiMapper">
+    <resultMap id="GeneralApiPage" type="com.cloud.dips.raus.api.pojo.GeneralApiPOJO">
+    	<result property="id" column="id"/>
+        <result property="title" column="title"/>
+        <result property="url" column="url"/>
+       	<result property="summary" column="summary"/> 
+        <result property="publishTime" column="publish_time"/>
+        <result property="effectTime" column="effect_time"/>
+        <result property="invalidTime" column="invalid_time"/>
+        <result property="reference" column="reference"/>
+        <result property="level" column="level"/>
+        <result property="source" column="source"/>
+        <result property="issue" column="issue"/>
+        <result property="theme" column="theme"/>
+        <result property="target" column="target"/>
+        <result property="industry" column="industry"/>
+        <result property="scale" column="scale"/>
+        <result property="mark" column="mark"/>
+        <result property="region" column="region"/>
+    </resultMap>
+    <!-- 使用${}只能用于字段和表的动态传入，传入的参数中直接生成，不能防止sql注入，
+                  动态传入参数必须使用#{}，进入sql时会预编译，加上双引号，有效防止sql注入 -->
+    <!-- 根据用户选定的字段动态查询通用的api数据 -->
+    <select id="selectGeneralApi" resultType="com.cloud.dips.raus.api.pojo.GeneralApiPOJO">
+        SELECT
+       		id,
+        	<foreach collection="one.permitColumn.split(',')" index="index" item="item"
+				separator="," open="" close=",">
+			${item}
+			</foreach>
+        	 mark
+        FROM 
+        	gov_policy_general
+        WHERE 
+        	is_deleted = '0'
+        AND 
+        	examine_status=3
+        AND
+			<foreach collection="one.theme.split(',')" index="index" item="item"
+				separator="or" open="(" close=")">
+			find_in_set(#{item},theme)
+			</foreach>
+		AND
+			publish_time BETWEEN #{beforeMonth} AND #{currentMonth}
+        ORDER BY
+			publish_time DESC,id DESC
+    </select>
+	<!-- 查询发文部门 -->
+    <resultMap id="generalDispatch" type="com.cloud.dips.raus.api.pojo.GeneralApiPOJO">
+    	<result property="dispatchId" column="dispatchId"/>
+        <result property="dispatchName" column="dispatchName"/>
+     </resultMap>
+    <select id="selectGeneralDispatch" resultMap="generalDispatch">
+		SELECT
+		gr.relation_id as dispatchId,
+			o.name as dispatchName
+		FROM
+			gov_relation AS gr
+		LEFT JOIN gov_policy_organization AS o ON gr.correlation_id = o.id
+		LEFT JOIN gov_relation_type AS rt ON rt.number = 'gov_general_dispatch'
+		WHERE gr.node = 'gov_general_policy' AND gr.relation_id in
+		<foreach collection="dispatchId" index="index" item="item"
+				separator="," open="(" close=")">
+			#{item}
+		</foreach>
+		AND gr.type_id = rt.id AND o.is_deleted = '0'
+	</select>
+	<!-- 查询联合发文部门 -->
+	<resultMap id="generalUnion" type="com.cloud.dips.raus.api.pojo.GeneralApiPOJO">
+    	<result property="unionId" column="unionId"/>
+        <result property="unionName" column="unionName"/>
+     </resultMap>
+    <select id="selectGeneralUnion" resultMap="generalUnion">
+		SELECT
+		gr.relation_id as unionId,
+			o.name as unionName
+		FROM
+			gov_relation AS gr
+		LEFT JOIN gov_policy_organization AS o ON gr.correlation_id = o.id
+		LEFT JOIN gov_relation_type AS rt ON rt.number = 'gov_general_union'
+		WHERE gr.node = 'gov_general_policy' AND gr.relation_id in 
+		<foreach collection="unionId" index="index" item="item"
+				separator="," open="(" close=")">
+			#{item}
+		</foreach> 
+		AND gr.type_id = rt.id AND o.is_deleted = '0'
+	</select>
+     <!-- 查询标签 -->
+	<resultMap id="generalTag" type="com.cloud.dips.raus.api.pojo.GeneralApiPOJO">
+    	<result property="tagId" column="tagId"/>
+        <result property="tagName" column="tagName"/>
+     </resultMap>
+    <select id="selectGeneralTag" resultMap="generalTag">
+		SELECT
+			gtr.relation_id as tagId,
+            gt.name as tagName
+		FROM
+			gov_tag_relation AS gtr
+		LEFT JOIN gov_tag_relation_type AS rt ON rt.type_number = 'def'
+		LEFT JOIN gov_tag AS gt ON gt.id = gtr.tag_id
+		WHERE gtr.node = 'gov_general_policy' AND gtr.relation_id in 
+		<foreach collection="tagApiId" index="index" item="item"
+				separator="," open="(" close=")">
+			#{item}
+		</foreach>
+		AND gtr.type_id = rt.id
+	</select>
+	<!-- 查询正文 -->
+	<select id="selectGeneralText" resultType="com.cloud.dips.raus.api.pojo.GeneralApiPOJO">
+		SELECT id,text FROM gov_policy_general  WHERE id in
+		<foreach collection="generalApiId" index="index" item="item"
+				separator="," open="(" close=")">
+			#{item}
+			</foreach>
+	</select>
+</mapper>
+
+
+

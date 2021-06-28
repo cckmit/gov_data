@@ -1,0 +1,13 @@
+org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
+  com.cloud.dips.gov.api.feign.factory.RemoteGovPolicyDeclareServiceFallbackFactory,\
+  com.cloud.dips.gov.api.feign.factory.RemoteGovInformationServiceFallbackFactory,\
+  com.cloud.dips.gov.api.feign.factory.RemoteGovPolicyExplainServiceFallbackFactory,\
+  com.cloud.dips.gov.api.feign.factory.RemoteGovPolicyGeneralServiceFallbackFactory,\
+  com.cloud.dips.gov.api.feign.factory.RemoteGovPolicySenseServiceFallbackFactory,\
+  com.cloud.dips.gov.api.feign.factory.RemoteSortingDataServiceFallbackFactory,\
+  com.cloud.dips.gov.api.feign.fallback.RemoteGovInformationServiceFallbackImpl,\
+  com.cloud.dips.gov.api.feign.fallback.RemoteGovPolicyDeclareServiceFallbackImpl,\
+  com.cloud.dips.gov.api.feign.fallback.RemoteGovPolicyExplainServiceFallbackImpl,\
+  com.cloud.dips.gov.api.feign.fallback.RemoteGovPolicyGeneralServiceFallbackImpl,\
+  com.cloud.dips.gov.api.feign.fallback.RemoteGovPolicySenseServiceFallbackImpl,\
+  com.cloud.dips.gov.api.feign.fallback.RemoteSortingDataServiceFallbackImpl

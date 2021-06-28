@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.cloud.gds.gmsanalyse.mapper.PolicyAnalyseMapper">
+
+	<resultMap id="BaseMap" type="com.cloud.gds.gmsanalyse.entity.PolicyAnalyse">
+		<id column="id" property="id"/>
+		<result column="analyse_name" property="analyseName"/>
+		<result column="analyse_summary" property="analyseSummary"/>
+		<result column="feature_num" property="featureNum"/>
+		<result column="policy_num" property="policyNum"/>
+		<result column="analyse_state" property="analyseState"/>
+		<result column="create_user" property="createUser"/>
+		<result column="modified_user" property="modifiedUser"/>
+		<result column="create_time" property="createTime"/>
+		<result column="modified_time" property="modifiedTime"/>
+		<result column="is_deleted" property="isDeleted"/>
+	</resultMap>
+
+	<sql id="Base_Column_List">
+		id,analyse_name,analyse_summary,analyse_state,feature_num,policy_num,create_user,modified_user,create_time,modified_time,is_deleted
+	</sql>
+
+	<update id="queryDelete">
+		UPDATE policy_analyse
+		SET is_deleted = 1,
+		modified_time = now()
+		where is_deleted = 0 AND id = #{id}
+	</update>
+
+
+</mapper>

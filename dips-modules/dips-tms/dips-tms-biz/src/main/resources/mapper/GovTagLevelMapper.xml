@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+/*
+ *
+ * Copyright (c) 2018-2025, ZB All rights reserved.
+ *
+ * Author: ZB
+ *
+ */
+  -->
+
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.cloud.dips.tag.mapper.GovTagLevelMapper">
+	<!-- 通用查询映射结果 -->
+	<resultMap id="BaseResultMap" type="com.cloud.dips.tag.api.entity.GovTagLevel">
+		<id column="id" property="levelId"/>
+		<result column="name" property="name"/>
+		<result column="create_time" property="createTime"/>
+	</resultMap>
+
+	<!-- govTagVo结果集 -->
+	<resultMap id="govTagLevelVoResultMap" type="com.cloud.dips.tag.api.vo.GovTagLevelVO">
+		<id column="id" property="levelId"/>
+		<result column="name" property="name"/>
+		<result column="create_time" property="createTime"/>
+	</resultMap>
+
+
+</mapper>

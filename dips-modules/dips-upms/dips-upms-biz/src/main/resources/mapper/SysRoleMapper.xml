@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  ~
+  ~      Copyright (c) 2018-2025, RCG All rights reserved.
+  ~
+  -->
+
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.cloud.dips.admin.mapper.SysRoleMapper">
+
+	<!-- 通用查询映射结果 -->
+	<resultMap id="BaseResultMap" type="com.cloud.dips.admin.api.entity.SysRole">
+		<id column="id" property="id"/>
+		<result column="role_name" property="roleName"/>
+		<result column="role_code" property="roleCode"/>
+		<result column="role_desc" property="roleDesc"/>
+		<result column="create_time" property="createTime"/>
+		<result column="modified_time" property="modifiedTime"/>
+		<result column="is_deleted" property="isDeleted"/>
+	</resultMap>
+
+	<!--roleDto-->
+	<resultMap id="RoleDtoMap" type="com.cloud.dips.admin.api.dto.RoleDTO">
+		<id column="id" property="id"/>
+		<result column="role_name" property="roleName"/>
+		<result column="role_code" property="roleCode"/>
+		<result column="role_desc" property="roleDesc"/>
+		<result column="create_time" property="createTime"/>
+		<result column="modified_time" property="modifiedTime"/>
+		<result column="is_deleted" property="isDeleted"/>
+		<result column="dept_id" property="roleDeptId"/>
+		<result column="name" property="deptName"/>
+	</resultMap>
+
+	<select id="selectRolePage" resultMap="RoleDtoMap">
+		SELECT
+			*
+		FROM
+			gov_role r
+		LEFT JOIN gov_role_dept rd ON rd.role_id = r.id
+		LEFT JOIN gov_dept d ON rd.dept_id = d.id
+		WHERE r.is_deleted = 0
+		ORDER BY r.id ASC
+	</select>
+	<select id="selectListByDeptId" resultMap="BaseResultMap">
+		SELECT
+			r.id,
+			r.role_name,
+			r.role_code,
+			r.role_desc,
+			r.create_time,
+			r.modified_time,
+			r.is_deleted
+		FROM gov_role r LEFT OUTER JOIN gov_role_dept rd ON rd.role_id = r.id
+		WHERE rd.dept_id = #{deptId}
+	</select>
+	<!-- 通过用户ID，查询角色信息-->
+	<select id="findRolesByUserId" resultMap="BaseResultMap">
+        SELECT
+            r.*
+        FROM
+        gov_role r, gov_user_role ur WHERE r.id = ur.role_id AND r.is_deleted = 0 and  ur.user_id IN (#{userId})
+    </select>
+
+    <select id="selectRoleListForWeb" resultMap="BaseResultMap">
+		SELECT
+			r.id,
+			r.role_name,
+			r.role_code,
+			r.role_desc,
+			r.create_time,
+            <!--r.type,-->
+			r.modified_time,
+			r.is_deleted
+		FROM gov_role r 
+        WHERE r.is_deleted='0'
+				<!-- 临时注释：角色需要用类型标志位来解耦 AND r.type='3'-->
+	</select>
+
+     <select id="selectRolePageForWeb" resultMap="RoleDtoMap">
+		SELECT
+			*
+		FROM
+			gov_role r
+		LEFT JOIN gov_role_dept rd ON rd.role_id = r.id
+		LEFT JOIN gov_dept d ON rd.dept_id = d.id
+		WHERE r.is_deleted = 0
+       <!-- 临时注释：角色需要用类型标志位来解耦 AND r.type='3'-->
+		ORDER BY r.id ASC
+	</select>
+</mapper>

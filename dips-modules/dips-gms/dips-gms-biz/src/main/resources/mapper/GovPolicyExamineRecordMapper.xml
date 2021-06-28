@@ -1,0 +1,231 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.cloud.dips.gov.mapper.GovPolicyExamineRecordMapper">
+     <resultMap id="baseResultMap" type="com.cloud.dips.gov.api.entity.GovPolicyExamineRecord" >
+         <result property="id" column="id"/>
+		<result property="policyId" column="policy_id"/>
+		<result property="scrapyId" column="scrapy_id"/>
+        <result property="createTime" column="create_time"/>
+        <result property="modifiedTime" column="modified_time"/>
+        <result property="isDelete" column="is_delete"/>
+        <result property="behavior" column="behavior"/>
+        <result property="content" column="content"/>
+        <result property="createUser" column="create_user"/>
+        <result property="processorId" column="processor_id"/>
+        <result property="title" column="title"/>
+        <result property="policyType" column="policy_type"/>
+     </resultMap>
+
+     <select id="selectPolicyExamineRecordPage" resultMap="baseResultMap">
+            select 
+                r.*
+            from
+                gov_policy_examine_record r,
+                gov_user u
+            where r.is_deleted != '1'
+            <if test="scrapyId != null and scrapyId != ''">
+			    AND scrapy_id = #{scrapyId}
+		    </if>
+		    <if test="processorName != null and processorName != ''">
+		        AND  r.processorId = (select id from gov_user u where u.username = #{processorName})
+            </if>
+            <if test="examineUser != null and examineUser != ''">
+                AND  r.createUser = (select id from gov_user u where u.username = #{examineUser})
+            </if>
+            <if test="behavior != null and behavior != ''">
+                 AND r.behavior = #{behavior}
+            </if>
+            <if test="title != null and title != ''">
+                AND  r.title LIKE CONCAT('%',#{title},'%')
+            </if>
+     </select>
+     <resultMap id="examineResultMap" type="com.cloud.dips.gov.api.vo.ExamineVO" >
+        <result property="userName" column="userName"/>
+        <result property="agreeCount" column="agreeCount"/>
+        <result property="disagreeCount" column="disagreeCount"/>
+        <result property="commitCount" column="commitCount"/>
+        <result property="mark" column="mark"/>
+     </resultMap>
+     
+     <select id="selectExamineCount" resultMap="examineResultMap">
+        select 
+            sum(count.agreeCount)as agreeCount,
+            sum(count.disagreeCount) as disagreeCount,
+            count.commitCount as commitCount,
+            (countGeneral+countDeclare+countOther) as mark
+        from 
+        (
+             select  
+            u.username as userName,
+            (select count(*) from gov_policy_examine_record i 
+            where i.processor_id = u.id 
+            and i.behavior=2) as agreeCount,
+            
+            (select count(*) from gov_policy_examine_record i 
+            where i.processor_id = u.id
+            and i.behavior=3) as disagreeCount,
+            
+            (
+            SELECT
+                count( * ) + 
+                ( SELECT count( * ) FROM gov_policy_declare d WHERE d.is_deleted = 0 AND d.examine_status in (1,2) ) + 
+                ( SELECT count( * ) FROM gov_policy_information i WHERE i.is_deleted = 0 AND i.examine_status in (1,2) ) + 
+                ( SELECT count( * ) FROM gov_policy_explain e WHERE e.is_deleted = 0 AND e.examine_status in (1,2) )  
+            FROM
+                gov_policy_general g 
+            WHERE
+                g.is_deleted = 0 
+                AND g.examine_status in (1,2)
+            ) as commitCount,
+            ( SELECT count( * ) FROM gov_policy_examine_record i WHERE  i.behavior = 2 
+            and i.policy_type=0 ) countGeneral,
+            ( SELECT count( * )*2 FROM gov_policy_examine_record i WHERE  i.behavior = 2 
+            and i.policy_type=1 ) countDeclare,
+            ( SELECT count( * )*0.5 FROM gov_policy_examine_record i WHERE  i.behavior = 2 
+            and i.policy_type in (2,3) ) countOther
+   
+            
+        from gov_user u 
+        where u.is_deleted != '1'
+        group by u.id 
+        ) count
+     </select>
+     
+     <select id="selectCountForProcessorPage" resultMap="examineResultMap">
+         select  
+            u.username as userName,
+            (select count(*) from gov_policy_examine_record i 
+            where i.processor_id = u.id 
+            <if test="startTime != null and startTime != ''">
+                AND i.create_time &gt;= #{startTime}
+            </if>
+            <if test="endTime !=null and endTime != ''">
+                AND i.create_time &lt;= #{endTime}
+            </if>
+            and i.behavior=2) as agreeCount,
+            
+            (select count(*) from gov_policy_examine_record i 
+            where i.processor_id = u.id
+            <if test="startTime != null and startTime != ''">
+                AND i.create_time &gt;= #{startTime}
+            </if>
+            <if test="endTime !=null and endTime != ''">
+                AND i.create_time &lt;= #{endTime}
+            </if> 
+            and i.behavior=3) as disagreeCount,
+            
+            (
+             SELECT
+                count( * ) + 
+                ( SELECT count( * ) FROM gov_policy_declare d WHERE d.is_deleted = 0 AND d.processor_id = u.id
+                <if test="startTime != null and startTime != ''">
+                    AND d.create_time &gt;= #{startTime}
+                </if>
+                <if test="endTime !=null and endTime != ''">
+                    AND d.create_time &lt;= #{endTime}
+                </if> 
+                 AND d.examine_status in (1,2) ) + 
+                ( SELECT count( * ) FROM gov_policy_information i WHERE i.is_deleted = 0 AND i.processor_id = u.id
+                 <if test="startTime != null and startTime != ''">
+                    AND i.create_time &gt;= #{startTime}
+                </if>
+                <if test="endTime !=null and endTime != ''">
+                    AND i.create_time &lt;= #{endTime}
+                </if> 
+                 AND i.examine_status in (1,2) ) + 
+                ( SELECT count( * ) FROM gov_policy_explain e WHERE e.is_deleted = 0 AND e.processor_id = u.id
+                 <if test="startTime != null and startTime != ''">
+                    AND e.create_time &gt;= #{startTime}
+                </if>
+                <if test="endTime !=null and endTime != ''">
+                    AND e.create_time &lt;= #{endTime}
+                </if> 
+                 AND e.examine_status in (1,2) )  
+            FROM
+                gov_policy_general g 
+            WHERE
+                g.is_deleted = 0 
+                AND g.processor_id = u.id
+                AND g.examine_status in (1,2)
+                <if test="startTime != null and startTime != ''">
+                    AND g.create_time &gt;= #{startTime}
+                </if>
+                <if test="endTime !=null and endTime != ''">
+                    AND g.create_time &lt;= #{endTime}
+                </if> 
+           ) as commitCount,
+           (
+    ( SELECT count( * ) FROM gov_policy_examine_record i WHERE i.processor_id = u.id AND i.behavior = 2 
+            <if test="startTime != null and startTime != ''">
+                AND i.create_time &gt;= #{startTime}
+            </if>
+            <if test="endTime !=null and endTime != ''">
+                AND i.create_time &lt;= #{endTime}
+            </if> 
+    and i.policy_type=0 )+
+    
+    ( SELECT count( * )*2 FROM gov_policy_examine_record i WHERE i.processor_id = u.id AND i.behavior = 2 
+            <if test="startTime != null and startTime != ''">
+                AND i.create_time &gt;= #{startTime}
+            </if>
+            <if test="endTime !=null and endTime != ''">
+                AND i.create_time &lt;= #{endTime}
+            </if> 
+    and i.policy_type=1 )+
+    ( SELECT count( * )*0.5 FROM gov_policy_examine_record i WHERE i.processor_id = u.id AND i.behavior = 2 
+            <if test="startTime != null and startTime != ''">
+                AND i.create_time &gt;= #{startTime}
+            </if>
+            <if test="endTime !=null and endTime != ''">
+                AND i.create_time &lt;= #{endTime}
+            </if> 
+    and i.policy_type in (2,3) )
+    ) AS mark
+            
+        from gov_user u 
+        where u.is_deleted != '1'
+        <if test="processorName != null and processorName != ''">
+               and   u.username LIKE CONCAT('%',#{processorName},'%')
+        </if>
+        group by u.id 
+        order by
+        <if test="prop != null and prop != ''">
+            <if test="'agreeCount' == prop">
+                <if test="order == 'descending'">
+                    agreeCount DESC,
+                </if>
+                <if test="order == 'ascending'">
+                    agreeCount ASC,
+                </if>
+            </if>
+            <if test="'disagreeCount' == prop">
+                <if test="order == 'descending'">
+                    disagreeCount DESC,
+                </if>
+                <if test="order == 'ascending'">
+                    disagreeCount ASC,
+                </if>
+            </if>
+            <if test="'commitCount' == prop">
+                <if test="order == 'descending'">
+                    commitCount DESC,
+                </if>
+                <if test="order == 'ascending'">
+                    commitCount ASC,
+                </if>
+            </if>
+            <if test="'mark' == prop">
+                <if test="order == 'descending'">
+                    mark DESC,
+                </if>
+                <if test="order == 'ascending'">
+                    mark ASC,
+                </if>
+            </if>
+        </if>
+         u.id
+     </select>
+     
+     
+</mapper>

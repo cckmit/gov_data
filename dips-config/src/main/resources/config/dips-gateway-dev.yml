@@ -1,0 +1,121 @@
+spring:
+  cloud:
+    gateway:
+      locator:
+        enabled: true
+      routes:
+      # 认证中心
+      - id: dips-auth
+        uri: lb://dips-auth
+        predicates:
+        - Path=/auth/**
+        filters:
+          # 验证码处理
+        - ImageCodeGatewayFilter
+          # 前端密码解密
+        - PasswordDecoderFilter
+      #UPMS 模块
+      - id: dips-upms
+        uri: lb://dips-upms
+        predicates:
+        - Path=/admin/**
+      #国策分析GMS-ANALYSE模块
+      - id: gds-gmsanalyse
+        uri: lb://gds-gmsanalyse
+        predicates:
+        - Path=/gmsanalyse/**
+        filters:
+          # 限流配置
+        - name: RequestRateLimiter
+          args:
+            key-resolver: '#{@remoteAddrKeyResolver}'
+            redis-rate-limiter.replenishRate: 100
+            redis-rate-limiter.burstCapacity: 200
+         # 降级配置
+        - name: Hystrix
+          args:
+            name: default
+            fallbackUri: 'forward:/fallback'
+      #标签模块
+      - id: dips-tms
+        uri: lb://dips-tms
+        predicates:
+        - Path=/tms/**
+        filters:
+          # 限流配置
+        - name: RequestRateLimiter
+          args:
+            key-resolver: '#{@remoteAddrKeyResolver}'
+            redis-rate-limiter.replenishRate: 10
+            redis-rate-limiter.burstCapacity: 20
+      # 代码生成模块
+      - id: dips-codegen
+        uri: lb://dips-codegen
+        predicates:
+        - Path=/gen/**
+      #UPMS 模块
+      - id: dips-gms
+        uri: lb://dips-gms
+        predicates:
+        - Path=/gov/**
+      #web-user 模块
+      - id: dips-web-user
+        uri: lb://dips-web-user
+        predicates:
+        - Path=/user/**
+        filters:
+          # 限流配置
+        - name: RequestRateLimiter
+          args:
+            key-resolver: '#{@remoteAddrKeyResolver}'
+            redis-rate-limiter.replenishRate: 10
+            redis-rate-limiter.burstCapacity: 20
+         # 降级配置
+        - name: Hystrix
+          args:
+            name: default
+            fallbackUri: 'forward:/fallback'
+            
+             #raus 模块
+      - id: dips-raus
+        uri: lb://dips-raus
+        predicates:
+        - Path=/raus/**
+        filters:
+          # 限流配置
+        - name: RequestRateLimiter
+          args:
+            key-resolver: '#{@remoteAddrKeyResolver}'
+            redis-rate-limiter.replenishRate: 10
+            redis-rate-limiter.burstCapacity: 20
+         # 降级配置
+        - name: Hystrix
+          args:
+            name: default
+            fallbackUri: 'forward:/fallback' 
+               #theme 模块
+      - id: dips-policy-theme
+        uri: lb://dips-policy-theme
+        predicates:
+        - Path=/theme/**
+        filters:
+          # 限流配置
+        - name: RequestRateLimiter
+          args:
+            key-resolver: '#{@remoteAddrKeyResolver}'
+            redis-rate-limiter.replenishRate: 10
+            redis-rate-limiter.burstCapacity: 20
+         # 降级配置
+        - name: Hystrix
+          args:
+            name: default
+            fallbackUri: 'forward:/fallback' 
+            
+security:
+  encode:
+    # 前端密码密钥，必须16位
+    key: 'dipscloudisbest1'
+# 不校验验证码终端
+ignore:
+  clients:
+    test

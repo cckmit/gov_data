@@ -1,0 +1,1036 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.cloud.dips.gov.mapper.GovPolicyExplainMapper">
+
+    <resultMap type="com.cloud.dips.gov.api.vo.ExplainVO" id="ExplainVOExplainMap">
+        <id property="id" column="id"/>
+        <result property="title" column="title"/>
+        <result property="publishTime" column="publish_time"/>
+        <result property="source" column="source"/>
+        <result property="level" column="level"/>
+        <result property="levelName" column="levelName"/>
+        <result property="main" column="main"/>
+        <result property="mainName" column="mainName"/>
+        <result property="summary" column="summary"/>
+        <result property="text" column="text"/>
+        <result property="image" column="image"/>
+        <result property="url" column="url"/>
+        <result property="views" column="views"/>
+        <result property="priority" column="priority"/>
+        <result property="creatorId" column="creator_id"/>
+        <result property="creatorName" column="creatorName"/>
+        <result property="createTime" column="create_time"/>
+        <result property="theme" column="theme"/>
+        <result property="industry" column="industry"/>
+        <result property="mark" column="mark"/>
+        <result property="regionArrString" column="region_arr"/>
+        <result property="examineStatus" column="examine_status"/>
+        <result property="examineUser" column="'examine_user_id'"/>
+        <result property="examineDate" column="examine_date"/>
+        <result property="retreatCount" column="retreat_count"/>
+        <result property="retreatUser" column="retreat_user"/>
+        <result property="processorId" column="processor_id"/>
+        <result property="scrapyId" column="scrapy_id"/>
+        <result property="commitTime" column="commit_time"/>
+        <result property="examineUserName" column="examineUserName"/>
+        <association property="next" select="selectExplainNext" column="{nextId=id,nextTime=publish_time}">
+        </association>
+       <association property="prev" select="selectExplainPrev" column="{prevId=id,prevTime=publish_time}">
+        </association> 
+        <collection property="policyList" select="selectExplainPolicyList" column="id">
+        </collection>
+    </resultMap>
+     <resultMap type="com.cloud.dips.gov.api.vo.ExplainVO" id="ExplainPageVOMap">
+        <id property="id" column="id"/>
+        <result property="title" column="title"/>
+        <result property="publishTime" column="publish_time"/>
+        <result property="source" column="source"/>
+        <result property="level" column="level"/>
+        <result property="levelName" column="levelName"/>
+        <result property="main" column="main"/>
+        <result property="mainName" column="mainName"/>
+        <result property="summary" column="summary"/>
+        <result property="text" column="text"/>
+        <result property="image" column="image"/>
+        <result property="url" column="url"/>
+        <result property="views" column="views"/>
+        <result property="priority" column="priority"/>
+        <result property="creatorId" column="creator_id"/>
+        <result property="creatorName" column="creatorName"/>
+        <result property="createTime" column="create_time"/>
+        <result property="theme" column="theme"/>
+        <result property="industry" column="industry"/>
+        <result property="mark" column="mark"/>
+        <result property="regionArrString" column="region_arr"/>
+        <result property="examineStatus" column="examine_status"/>
+        <result property="examineUser" column="'examine_user_id'"/>
+        <result property="examineDate" column="examine_date"/>
+        <result property="retreatCount" column="retreat_count"/>
+        <result property="retreatUser" column="retreat_user"/>
+        <result property="processorId" column="processor_id"/>
+        <result property="scrapyId" column="scrapy_id"/>
+        <result property="commitTime" column="commit_time"/>
+         <result property="examineUserName" column="examineUserName"/>
+    </resultMap>
+    
+    <resultMap id="selfAndExaminePage" type="com.cloud.dips.gov.api.vo.ExplainVO">
+        <id property="id" column="id"/>
+        <result property="title" column="title"/>
+        <result property="publishTime" column="publish_time"/>
+        <result property="examineStatus" column="examine_status"/>
+        <result property="creatorName" column="creatorName"/>
+        <result property="createTime" column="create_time"/>
+        <result property="retreatCount" column="retreat_count"/>
+        <result property="retreatContent" column="retreat_content"/>
+        <result property="commitTime" column="commit_time"/>
+        <result property="examineUserName" column="examineUserName"/>
+    </resultMap>
+		
+    <resultMap type="com.cloud.dips.gov.api.vo.ExplainVO" id="ExplainVOExplainWxMap">
+        <id property="id" column="id"/>
+        <result property="title" column="title"/>
+        <result property="publishTime" column="publish_time"/>
+        <result property="source" column="source"/>
+        <result property="level" column="level"/>
+        <result property="levelName" column="levelName"/>
+        <result property="main" column="main"/>
+        <result property="mainName" column="mainName"/>
+        <result property="summary" column="summary"/>
+        <result property="text" column="text"/>
+        <result property="image" column="image"/>
+        <result property="url" column="url"/>
+        <result property="views" column="views"/>
+        <result property="priority" column="priority"/>
+        <result property="creatorId" column="creator_id"/>
+        <result property="creatorName" column="creatorName"/>
+        <result property="createTime" column="create_time"/>
+        <result property="theme" column="theme"/>
+        <result property="industry" column="industry"/>
+        <result property="mark" column="mark"/>
+        <result property="region" column="region"/>
+        <result property="examineStatus" column="examine_status"/>
+        <result property="examineUser" column="'examine_user_id'"/>
+        <result property="examineDate" column="examine_date"/>
+        <result property="retreatCount" column="retreat_count"/>
+        <result property="retreatUser" column="retreat_user"/>
+        <result property="processorId" column="processor_id"/>
+        <result property="scrapyId" column="scrapy_id"/>
+        <result property="commitTime" column="commit_time"/>
+        <!-- <collection property="tagList" select="selectExplainTagList" column="id">
+        </collection> -->
+    </resultMap>
+
+    <resultMap id="selectExplainByGeneral" type="com.cloud.dips.gov.api.entity.GovPolicyExplain">
+        <result property="id" column="id"/>
+        <result property="title" column="title"/>
+        <result property="publishTime" column="publish_time"/>
+        <result property="mark" column="mark"/>
+    </resultMap>
+
+    <sql id="selectExplainVO">
+		SELECT
+			gpe.id,
+			gpe.title,
+			gpe.publish_time,
+			gpe.source,
+			gpe.summary,
+			gpe.image,
+			gpe.url,
+			gpe.priority,
+			gpe.views,
+			gpe.level,
+			gpe.main,
+			gpe.create_time,
+			gpe.creator_id,
+			u.username AS creatorName,
+			gpe.theme,
+			gpe.industry,
+			gpe.mark,
+			gpe.region,
+			gpe.file,
+			gpe.region_arr,
+            gpe.retreat_content,
+            gpe.retreat_count
+		FROM
+			gov_policy_explain AS gpe
+		LEFT JOIN gov_user AS u ON u.id = gpe.creator_id
+	</sql>
+
+	<sql id="selectExplainsVO">
+		SELECT
+			gpe.id,
+			gpe.title,
+			gpe.publish_time,
+			gpe.source,
+			gpe.summary,
+			gpe.image,
+			gpe.url,
+			gpe.priority,
+			gpe.views,
+			gpe.level,
+			gpe.main,
+			gpe.create_time,
+			gpe.creator_id,
+			gpe.theme,
+			gpe.industry,
+			gpe.mark,
+			gpe.region,
+			gpe.file,
+			gpe.region_arr,
+            gpe.retreat_content,
+            gpe.retreat_count
+		FROM
+			gov_policy_explain AS gpe
+	</sql>
+
+    <select id="selectAllVo" resultMap="ExplainVOExplainMap">
+        <include refid="selectExplainsVO"/>
+        WHERE gpe.id = #{id} AND gpe.is_deleted = '0' AND gpe.examine_status = 3
+    </select>
+
+    <select id="selectAllVoForConsole" resultMap="ExplainPageVOMap">
+        <include refid="selectExplainVO"/>
+        WHERE gpe.id = #{id} AND gpe.is_deleted = '0'
+    </select>
+    
+    <select id="selectSelfPage" resultMap="selfAndExaminePage">
+         SELECT
+            gpe.id,
+            gpe.source,
+            gpe.title,
+            gpe.publish_time,
+            gpe.create_time,
+            gpe.examine_status,
+            gpe.retreat_content,
+            gpe.retreat_count,
+            u.username AS creatorName
+        FROM
+        gov_policy_explain AS gpe
+        LEFT JOIN gov_user AS u ON u.id = gpe.creator_id
+        WHERE gpe.is_deleted = '0'
+        <if test="title != null and title != ''">
+            AND gpe.title LIKE CONCAT('%',#{title},'%')
+        </if>
+        <if test="processorId != null and processorId != ''">
+            AND gpe.processor_id = #{processorId}
+        </if>
+        <if test="examineStatus != null and examineStatus != ''">
+            AND examine_status = #{examineStatus}
+        </if>
+        <if test="main != null and main != ''">
+            and gpe.main = #{main}
+        </if>
+        <if test="level != null and level != ''">
+            and gpe.level = #{level}
+        </if>
+        <if test="startTime != null and startTime != ''">
+            and gpe.publish_time &gt;= #{startTime}
+        </if>
+        <if test="endTime !=null and endTime != ''">
+            and gpe.publish_time &lt;= #{endTime}
+        </if>
+        <if test="username != null and username != ''">
+            and u.username = #{username}
+        </if>
+        <if test="theme != null and theme != ''">
+            and gpe.theme LIKE CONCAT('%',#{theme},'%')
+        </if>
+        <if test="industry != null and industry != ''">
+            and gpe.industry LIKE CONCAT('%',#{industry},'%')
+        </if>
+        <if test="regionArr != null and regionArr != '' and regionArr != '0'.toString()">
+            AND gpe.region_arr LIKE CONCAT('%',#{regionArr})
+        </if>
+        ORDER BY 
+        <if test="prop != null and prop != ''">
+            <if test="'publishTime' == prop">
+                <if test="order == 'descending'">
+                    gpe.publish_time DESC,
+                </if>
+                <if test="order == 'ascending'">
+                    gpe.publish_time ASC,
+                </if>
+            </if>
+            <if test="'examineDate' == prop">
+                <if test="order == 'descending'">
+                    gpe.examine_date DESC,
+                </if>
+                <if test="order == 'ascending'">
+                    gpe.examine_date ASC,
+                </if>
+            </if>
+            <if test="'createTime' == prop">
+                <if test="order == 'descending'">
+                    gpe.create_time DESC,
+                </if>
+                <if test="order == 'ascending'">
+                    gpe.create_time ASC,
+                </if>
+            </if>
+        </if>
+		gpe.examine_status=6 desc ,gpe.create_time DESC
+    </select>
+
+    <select id="selectExaminePage" resultMap="selfAndExaminePage">
+        SELECT
+            gpe.id,
+            gpe.source,
+            gpe.title,
+            gpe.publish_time,
+            gpe.create_time,
+            gpe.examine_status,
+            gpe.retreat_content,
+            gpe.retreat_count,
+            gpe.commit_time,
+            u.username AS creatorName,
+        (select us.username from gov_user us where us.id=gpe.examine_user_id) as examineUserName
+        FROM
+        gov_policy_explain AS gpe
+        LEFT JOIN gov_user AS u ON u.id = gpe.creator_id
+        WHERE gpe.is_deleted = '0'
+        AND examine_status in (1,2)
+        <if test="title != null and title != ''">
+            AND gpe.title LIKE CONCAT('%',#{title},'%')
+        </if>
+        <if test="processorName != null and processorName != ''">
+            AND u.username = #{processorName}
+        </if>
+        <if test="examineStatus != null and examineStatus != ''">
+            AND examine_status = #{examineStatus}
+        </if>
+        <if test="main != null and main != ''">
+            and gpe.main = #{main}
+        </if>
+        <if test="level != null and level != ''">
+            and gpe.level = #{level}
+        </if>
+        <if test="startTime != null and startTime != ''">
+            and gpe.publish_time &gt;= #{startTime}
+        </if>
+        <if test="endTime !=null and endTime != ''">
+            and gpe.publish_time &lt;= #{endTime}
+        </if>
+        <if test="username != null and username != ''">
+            and u.username = #{username}
+        </if>
+        <if test="theme != null and theme != ''">
+            and gpe.theme LIKE CONCAT('%',#{theme},'%')
+        </if>
+        <if test="industry != null and industry != ''">
+            and gpe.industry LIKE CONCAT('%',#{industry},'%')
+        </if>
+        <if test="regionArr != null and regionArr != '' and regionArr != '0'.toString()">
+            AND gpe.region_arr LIKE CONCAT('%',#{regionArr})
+        </if>
+        ORDER BY
+        <if test="prop != null and prop != ''">
+            <if test="'publishTime' == prop">
+                <if test="order == 'descending'">
+                    gpe.publish_time DESC,
+                </if>
+                <if test="order == 'ascending'">
+                    gpe.publish_time ASC,
+                </if>
+            </if>
+            <if test="'examineDate' == prop">
+                <if test="order == 'descending'">
+                    gpe.examine_date DESC,
+                </if>
+                <if test="order == 'ascending'">
+                    gpe.examine_date ASC,
+                </if>
+            </if>
+             <if test="'commitTime' == prop">
+                <if test="order == 'descending'">
+                    gpe.commit_time DESC,
+                </if>
+                <if test="order == 'ascending'">
+                    gpe.commit_time ASC,
+                </if>
+            </if>
+        </if>
+        gpe.commit_time DESC,gpe.publish_time DESC
+    </select>
+
+    <select id="updateForGiveUpProcess">
+       UPDATE scrapy_gov_policy_general 
+        SET is_deleted = "0" 
+        WHERE
+            processor_id = #{processorId}
+            AND id = #{scrapyId}
+    </select>
+
+    <select id="updateForGiveUpProcessToExplain">
+       UPDATE scrapy_gov_policy_explain 
+        SET is_deleted = "0" 
+        WHERE
+            processor_id = #{processorId}
+            AND id = #{scrapyId}
+    </select>
+
+    <select id="viewUp">
+       UPDATE gov_policy_explain set views=views+1  WHERE id = #{id}
+    </select>
+
+	<select id="explainPageVO" resultMap="ExplainPageVOMap">
+		SELECT
+			gpe.id,
+			gpe.title,
+			gpe.publish_time,
+			gpe.summary,
+			gpe.views,
+			gpe.level,
+			gpe.mark,
+			d1.value AS levelName,
+			gpe.creator_id,
+			gpe.region,
+            gpe.create_time,
+			gpe.region_arr,
+			gpe.file,
+			u.username AS creatorName
+		FROM
+			gov_policy_explain AS gpe
+		LEFT JOIN gov_dict_value AS d1 ON d1.key = gpe.level AND d1.dict_id = (SELECT id FROM gov_dict WHERE number = 'POLICY_LEVEL')
+		LEFT JOIN gov_user AS u ON u.id = gpe.creator_id
+		WHERE gpe.is_deleted = '0'
+		AND gpe.examine_status=3
+		<if test="title != null and title != ''">
+			 AND MATCH (gpe.title) AGAINST (#{title} IN BOOLEAN MODE)
+		</if>
+		<if test="main != null and main != ''">
+			and gpe.main = #{main}
+		</if>
+		<if test="level != null and level != ''">
+			and gpe.level = #{level}
+		</if>
+		<if test="startTime != null and startTime != ''">
+			and gpe.publish_time &gt;= #{startTime}
+		</if>
+		<if test="endTime !=null and endTime != ''">
+			and gpe.publish_time &lt;= #{endTime}
+		</if>
+		<if test="username != null and username != ''">
+			and u.username = #{username}
+		</if>
+		<if test="theme != null and theme != ''">
+			and gpe.theme LIKE CONCAT('%',#{theme},'%')
+		</if>
+		<if test="industry != null and industry != ''">
+			and gpe.industry LIKE CONCAT('%',#{industry},'%')
+		</if>
+		<if test="regionArr != null and regionArr != '' and regionArr != '0'.toString()">
+			AND	gpe.region_arr LIKE CONCAT('%',#{regionArr})
+		</if>
+		ORDER BY 
+		<if test="sort == 'views'">
+			gpe.views DESC,
+		</if>
+		<if test="sort == 'time'">
+			gpe.publish_time DESC,
+		</if>
+		    gpe.id DESC
+	</select>
+	
+
+    <select id="explainPageVOForConsole" resultMap="ExplainPageVOMap">
+        SELECT
+        gpe.id,
+        gpe.title,
+        gpe.publish_time,
+        gpe.summary,
+        gpe.views,
+        gpe.level,
+        gpe.mark,
+        gpe.creator_id,
+        gpe.region,
+        gpe.create_time,
+        gpe.region_arr,
+        gpe.file,
+        gpe.examine_date,
+        u.username AS creatorName,
+        (select us.username from gov_user us where us.id=gpe.examine_user_id) as examineUserName
+        FROM
+        gov_policy_explain AS gpe
+        LEFT JOIN gov_user AS u ON u.id = gpe.creator_id
+        WHERE gpe.is_deleted = '0'
+        AND gpe.examine_status=3
+        <if test="title != null and title != ''">
+            and gpe.title LIKE CONCAT('%',#{title},'%')
+        </if>
+        <if test="main != null and main != ''">
+            and gpe.main = #{main}
+        </if>
+        <if test="level != null and level != ''">
+            and gpe.level = #{level}
+        </if>
+        <if test="startTime != null and startTime != ''">
+            and gpe.publish_time &gt;= #{startTime}
+        </if>
+        <if test="endTime !=null and endTime != ''">
+            and gpe.publish_time &lt;= #{endTime}
+        </if>
+        <if test="username != null and username != ''">
+            and u.username = #{username}
+        </if>
+        <if test="theme != null and theme != ''">
+            and gpe.theme LIKE CONCAT('%',#{theme},'%')
+        </if>
+        <if test="industry != null and industry != ''">
+            and gpe.industry LIKE CONCAT('%',#{industry},'%')
+        </if>
+        <if test="regionArr != null and regionArr != '' and regionArr != '0'.toString()">
+            AND gpe.region_arr LIKE CONCAT('%',#{regionArr})
+        </if>
+        ORDER BY
+        <if test="priority != null and priority != ''">
+            gpe.priority ASC,
+        </if>
+        <if test="views != null and views != ''">
+            gpe.views DESC,
+        </if>
+        <if test="time != null and time != ''">
+            gpe.publish_time DESC,
+        </if>
+         <if test="prop != null and prop != ''">
+            <if test="'publishTime' == prop">
+                <if test="order == 'descending'">
+                    gpe.publish_time DESC,
+                </if>
+                <if test="order == 'ascending'">
+                    gpe.publish_time ASC,
+                </if>
+            </if>
+            <if test="'examineDate' == prop">
+                <if test="order == 'descending'">
+                    gpe.examine_date DESC,
+                </if>
+                <if test="order == 'ascending'">
+                    gpe.examine_date ASC,
+                </if>
+            </if>
+        </if>       
+        gpe.examine_date DESC,gpe.publish_time DESC
+    </select>
+	
+	<select id="selectWechatPage"  resultMap="ExplainVOExplainWxMap">
+		SELECT
+		gpe.id,
+		gpe.title,
+		gpe.publish_time,
+		gpe.creator_id
+		FROM
+		gov_policy_explain AS gpe
+		WHERE gpe.is_deleted = '0'
+		<if test="title != null and title != ''">
+			and gpe.title LIKE CONCAT('%',#{title},'%')
+		</if>
+		<if test="main != null and main != ''">
+			and gpe.main = #{main}
+		</if>
+		<if test="level != null and level != ''">
+			and gpe.level = #{level}
+		</if>
+		<if test="startTime != null and startTime != ''">
+			and gpe.publish_time &gt;= #{startTime}
+		</if>
+		<if test="endTime !=null and endTime != ''">
+			and gpe.publish_time &lt;= #{endTime}
+		</if>
+		<if test="username != null and username != ''">
+			and u.username = #{username}
+		</if>
+		<if test="theme != null and theme != ''">
+			and gpe.theme LIKE CONCAT('%',#{theme},'%')
+		</if>
+		<if test="industry != null and industry != ''">
+			and gpe.industry LIKE CONCAT('%',#{industry},'%')
+		</if>
+		<if test="regionArr != null and regionArr != '' and regionArr != '0'.toString()">
+			AND	gpe.region_arr LIKE CONCAT('%',#{regionArr})
+		</if>
+		ORDER BY
+		gpe.publish_time DESC,
+		gpe.id DESC
+    </select>
+
+    <select id="selectWechatPage" resultMap="ExplainVOExplainWxMap">
+        SELECT
+        gpe.id,
+        gpe.title,
+        gpe.publish_time,
+        gpe.creator_id
+        FROM
+        gov_policy_explain AS gpe
+        WHERE gpe.is_deleted = '0'
+        <if test="title != null and title != ''">
+            and gpe.title LIKE CONCAT('%',#{title},'%')
+        </if>
+        <if test="main != null and main != ''">
+            and gpe.main = #{main}
+        </if>
+        <if test="level != null and level != ''">
+            and gpe.level = #{level}
+        </if>
+        <if test="startTime != null and startTime != ''">
+            and gpe.publish_time &gt;= #{startTime}
+        </if>
+        <if test="endTime !=null and endTime != ''">
+            and gpe.publish_time &lt;= #{endTime}
+        </if>
+        <if test="username != null and username != ''">
+            and u.username = #{username}
+        </if>
+        <if test="theme != null and theme != ''">
+            and gpe.theme LIKE CONCAT('%',#{theme},'%')
+        </if>
+        <if test="industry != null and industry != ''">
+            and gpe.industry LIKE CONCAT('%',#{industry},'%')
+        </if>
+        <if test="regionArr != null and regionArr != '' and regionArr != '0'.toString()">
+            AND gpe.region_arr LIKE CONCAT('%',#{regionArr})
+        </if>
+        ORDER BY
+        <if test="priority != null and priority != ''">
+            gpe.priority ASC,
+        </if>
+        <if test="views != null and views != ''">
+            gpe.views DESC,
+        </if>
+        <if test="time != null and time != ''">
+            gpe.publish_time DESC,
+        </if>
+        gpe.publish_time DESC
+    </select>
+
+    <select id="selectRecyclePage" resultMap="ExplainVOExplainMap">
+        SELECT
+        gpe.id,
+        gpe.title,
+        gpe.publish_time,
+        gpe.summary,
+        gpe.views,
+        gpe.level,
+        d1.value AS levelName,
+        gpe.creator_id,
+        gpe.region,
+        gpe.region_arr,
+        u.username AS creatorName
+        FROM
+        gov_policy_explain AS gpe
+        LEFT JOIN gov_dict_value AS d1 ON d1.key = gpe.level AND d1.dict_id = (SELECT id FROM gov_dict WHERE number =
+        'POLICY_LEVEL')
+        LEFT JOIN gov_user AS u ON u.id = gpe.creator_id
+        WHERE gpe.is_deleted = '1'
+        <if test="title != null and title != ''">
+            AND gpe.title LIKE CONCAT('%',#{title},'%')
+        </if>
+        <if test="username != null and username != ''">
+            AND u.username = #{username}
+        </if>
+        ORDER BY gpe.id DESC
+    </select>
+
+    <select id="selectExplainVoPageByTagId" resultType="com.cloud.dips.gov.api.vo.ExplainVO">
+		SELECT
+			e.id,
+			e.title
+		FROM
+			gov_tag_relation AS gtr
+		LEFT JOIN gov_tag_relation_type AS rt ON rt.type_number = 'def' AND gtr.type_id = rt.id
+		LEFT JOIN gov_tag AS gt ON gt.id = gtr.tag_id
+		LEFT JOIN gov_policy_explain AS e ON gtr.relation_id = e.id
+		WHERE gtr.node = 'explain' AND gt.id = #{tagId} AND e.is_deleted = '0' AND e.examine_status='3'
+	</select>
+		<resultMap id="commonVOMap" type="com.cloud.dips.gov.api.vo.CommonVO">
+        <result column="id" property="commonId"/>
+        <result column="name" property="commonName"/>
+    	</resultMap>
+    <!-- 关联机构 -->
+    <select id="selectExplainOrganizationList" resultMap="commonVOMap">
+		SELECT
+			o.id,
+			o.`name`
+		FROM
+			gov_relation AS gr
+		INNER JOIN gov_policy_organization AS o ON gr.correlation_id = o.id
+		LEFT JOIN gov_relation_type AS rt ON rt.number = 'gov_explain_organization'
+		WHERE gr.node = 'explain' AND gr.relation_id = #{id} AND gr.type_id = rt.id
+	</select>
+
+    <!-- 关联政策 -->
+    <select id="selectExplainPolicyList" resultMap="explainCommonVOMap">
+		SELECT
+			pg.id,
+			pg.title
+		FROM
+			gov_relation AS gr
+		LEFT JOIN gov_policy_general AS pg ON gr.correlation_id = pg.id
+		LEFT JOIN gov_relation_type AS rt ON rt.number = 'gov_explain_general'
+		WHERE gr.node = 'explain' AND gr.relation_id = #{id} AND gr.type_id = rt.id AND pg.is_deleted = '0'
+	</select>
+
+    <!-- 标签 -->
+    <resultMap id="GovTagRelationVOMap" type="com.cloud.dips.gov.api.vo.CommonVO">
+        <id column="tagId" property="commonId"/>
+        <result column="tagName" property="commonName"/>
+    </resultMap>
+    <select id="selectExplainTagList" resultMap="GovTagRelationVOMap">
+		SELECT
+            gt.id AS tagId,
+            gt.name AS tagName
+		FROM
+			gov_tag_relation AS gtr
+		LEFT JOIN gov_tag_relation_type AS rt ON rt.type_number = 'def'
+		LEFT JOIN gov_tag AS gt ON gt.id = gtr.tag_id
+		WHERE gtr.node = 'explain' AND gtr.relation_id = #{id} AND gtr.type_id = rt.id
+		GROUP BY
+			gt.id
+	</select>
+	
+	<select id="checkTag" resultType="java.lang.Integer">
+        SELECT
+            count(*)
+        FROM
+            gov_tag_relation AS gtr
+        LEFT JOIN gov_tag_relation_type AS rt ON rt.type_number = 'def'
+        LEFT JOIN gov_tag AS gt ON gt.id = gtr.tag_id
+        WHERE gtr.node = 'explain' AND gtr.relation_id = #{id} AND gtr.type_id = rt.id
+    </select>
+
+    <!-- 前后id -->
+    <resultMap id="explainCommonVOMap" type="com.cloud.dips.gov.api.vo.CommonVO">
+        <result column="id" property="commonId"/>
+        <result column="title" property="commonName"/>
+    </resultMap>
+    <select id="selectExplainNext" resultMap="explainCommonVOMap">
+		SELECT
+	  		id,
+	  		title
+	  	FROM
+	  		gov_policy_explain
+	   WHERE
+	  	ID = (
+		SELECT
+			(
+				CASE
+				WHEN (
+						SELECT A.G1+A.G2 FROM (SELECT
+						(
+							CASE
+							WHEN MIN(polGen.id) = #{nextId} THEN
+								0
+							ELSE
+								1
+							END
+						) G1,
+						(
+							CASE
+							WHEN COUNT(1) &gt; 1 THEN
+								1
+							ELSE
+								0
+							END
+						) G2
+					FROM
+						gov_policy_explain AS polGen
+					WHERE
+						polGen.is_deleted = '0'
+					AND polGen.examine_status = 3
+					AND DATE_FORMAT(polGen.publish_time,'%Y-%m-%d %H:%i') = DATE_FORMAT(#{nextTime},'%Y-%m-%d %H:%i')
+					ORDER BY
+						polGen.publish_time DESC,
+						polGen.id DESC) A
+				) > 1 THEN
+					(
+						SELECT
+							polGen.id
+						FROM
+							gov_policy_explain AS polGen
+						WHERE
+							polGen.is_deleted = '0'
+						AND polGen.examine_status = 3
+						AND polGen.ID &lt; #{nextId}
+						AND DATE_FORMAT(polGen.publish_time,'%Y-%m-%d %H:%i') &lt;= DATE_FORMAT(#{nextTime},'%Y-%m-%d %H:%i')
+						ORDER BY
+							polGen.publish_time DESC,
+							polGen.id DESC
+						LIMIT 0,
+						1
+					)
+				ELSE
+					(
+						SELECT
+							polGen.id
+						FROM
+							gov_policy_explain AS polGen
+						WHERE
+							polGen.is_deleted = '0'
+						AND polGen.examine_status = 3
+						AND polGen.ID <![CDATA[ <> ]]> #{nextId}
+						AND DATE_FORMAT(polGen.publish_time,'%Y-%m-%d %H:%i') &lt; DATE_FORMAT(#{nextTime},'%Y-%m-%d %H:%i')
+						ORDER BY
+							polGen.publish_time DESC,
+							polGen.id DESC
+						LIMIT 0,
+						1
+					)
+				END
+			) AS GID
+		FROM
+			DUAL
+	)
+	</select>
+    <select id="selectExplainPrev" resultMap="explainCommonVOMap">
+		SELECT
+	  		id,
+	  		title
+	  	FROM
+	  		gov_policy_explain
+	  	WHERE
+	  	ID = (
+		SELECT
+			(
+				CASE
+				WHEN (
+						SELECT A.G1+A.G2 FROM (SELECT
+						(
+							CASE
+							WHEN max(polGen.id) = #{prevId} THEN
+								0
+							ELSE
+								1
+							END
+						) G1,
+						(
+							CASE
+							WHEN COUNT(1) &gt; 1 THEN
+								1
+							ELSE
+								0
+							END
+						) G2
+					FROM
+						gov_policy_explain AS polGen
+					WHERE
+						polGen.is_deleted = '0'
+					AND polGen.examine_status = 3
+					AND unix_timestamp(polGen.publish_time) = unix_timestamp(#{prevTime})
+					ORDER BY
+						polGen.publish_time,
+						polGen.id) A
+				) &gt; 1 THEN
+					(
+						SELECT
+							polGen.id
+						FROM
+							gov_policy_explain AS polGen
+						WHERE
+							polGen.is_deleted = '0'
+						AND polGen.examine_status = 3
+						AND polGen.ID &gt; #{prevId}
+						AND unix_timestamp(polGen.publish_time) &gt;= unix_timestamp(#{prevTime})
+						ORDER BY
+							polGen.publish_time,
+							polGen.id
+						LIMIT 0,
+						1
+					)
+				ELSE
+					(
+						SELECT
+							polGen.id
+						FROM
+							gov_policy_explain AS polGen
+						WHERE
+							polGen.is_deleted = '0'
+						AND polGen.examine_status = 3
+						AND polGen.ID <![CDATA[ <> ]]> #{prevId}
+						AND unix_timestamp(polGen.publish_time) &gt; unix_timestamp(#{prevTime})
+						ORDER BY
+							polGen.publish_time,
+							polGen.id
+						LIMIT 0,
+						1
+					)
+				END
+			) AS GID
+		FROM
+			DUAL
+	)
+	</select>
+
+    <!-- 逻辑删除 -->
+    <update id="updateDelFlag">
+		UPDATE gov_policy_explain SET is_deleted = '1' WHERE id = #{id}
+	</update>
+
+    <!-- 浏览次数加1 -->
+    <update id="updateViews">
+		UPDATE
+			gov_policy_explain
+		SET
+			views = views + 1
+		WHERE
+			id = #{id}
+	</update>
+
+    <select id="repeat" resultType="com.cloud.dips.gov.api.entity.GovPolicyExplain">
+		SELECT
+			id,
+			title
+		FROM
+			gov_policy_explain
+		WHERE
+			is_deleted = '0' AND title = #{title}
+	</select>
+    <!-- 全局模糊搜索 -->
+    <select id="selectVagueExplain" resultMap="ExplainVOExplainMap">
+        SELECT
+        gpe.id,
+        gpe.title,
+        gpe.publish_time,
+        gpe.summary,
+        gpe.views,
+        gpe.level,
+        gpe.mark,
+        d1.value AS levelName,
+        gpe.creator_id,
+        u.username AS creatorName
+        FROM
+        gov_policy_explain AS gpe
+        LEFT JOIN gov_dict_value AS d1 ON d1.key = gpe.level AND d1.dict_id = (SELECT id FROM gov_dict WHERE number =
+        'POLICY_LEVEL')
+        LEFT JOIN gov_user AS u ON u.id = gpe.creator_id
+        WHERE gpe.is_deleted = '0'
+        AND
+        gpe.title LIKE CONCAT('%',#{title},'%')
+        ORDER BY
+        <if test="views != null and views != ''">
+            gpe.views DESC,
+        </if>
+        <if test="time != null and time != ''">
+            gpe.publish_time DESC,
+        </if>
+        gpe.id DESC
+        LIMIT
+        #{page},#{size}
+    </select>
+    <!-- 全局模糊搜索条数 -->
+    <select id="selectVagueCount" resultType="Integer">
+		SELECT
+			count(id)
+		FROM gov_policy_explain gpe
+		WHERE 
+		gpe.is_deleted = "0"
+		AND
+			gpe.title LIKE CONCAT('%',#{title},'%')
+		</select>
+    <!-- 引用的申报数量 -->
+    <select id="selectCountExplain" resultType="Integer">
+		SELECT
+			COUNT(id)
+		FROM
+			gov_policy_explain gpe
+		WHERE
+			gpe.is_deleted = 0
+		AND	find_in_set(#{theme}, gpe.theme)
+		</select>
+    <select id="selectRegionArr" resultType="String">
+		SELECT
+			a.region_arr
+		FROM
+			gov_policy_explain AS a
+		WHERE a.id = #{id}
+	</select>
+
+
+    <!--相关解读 根据政策原文 查询 通用、申报政策-->
+    <select id="findPolicyText" resultMap="selectExplainByGeneral">
+        select id,title,publish_time,mark from
+        themeforthreepolicy
+        where id in
+        <foreach collection="policyList" item="id" separator="," open="(" close=")">
+            #{id}
+        </foreach>
+        ORDER BY publish_time desc
+        LIMIT 0,5
+    </select>
+
+    <!--其它解读-->
+    <select id="findInterPreTaboo" resultMap="selectExplainByGeneral">
+        SELECT
+        distinct
+        pg.id,
+        pg.title
+        FROM
+        gov_relation AS gr
+        LEFT JOIN gov_policy_explain AS pg ON gr.relation_id = pg.id
+        LEFT JOIN gov_relation_type AS rt ON rt.number = 'gov_explain_general'
+        WHERE gr.node = 'explain' AND
+        gr.type_id = rt.id AND pg.is_deleted = '0'
+        and pg.examine_status=3
+        and correlation_id in
+        <foreach collection="policyList" item="id" separator="," open="(" close=")">
+            #{id}
+        </foreach>
+        and pg.id !=#{ids}
+        ORDER BY pg.publish_time desc LIMIT 0,5
+    </select>
+
+    <!--查询相关政策解读   政策原文 条件 通用政策-->
+    <select id="selectgenerlist" resultMap="selectExplainByGeneral">
+             SELECT
+             distinct
+			pg.id,
+			pg.title,
+			pg.publish_time,
+	        pg.mark
+		FROM
+			gov_relation AS gr
+		LEFT JOIN gov_policy_explain AS pg ON gr.relation_id = pg.id
+		LEFT JOIN gov_relation_type AS rt ON rt.number = 'gov_explain_general'
+		WHERE gr.node = 'explain' AND gr.correlation_id =#{id}  AND gr.type_id = rt.id
+               and pg.examine_status=3 and pg.is_deleted=0 ORDER BY
+	      pg.publish_time desc LIMIT 0,5
+	</select>
+	<!-- 重构查询正文 -->
+	<select id="selectExplainText" resultType="String">
+		SELECT text FROM gov_policy_explain  WHERE id = #{id}
+	</select>
+	<!-- 重构查询发文部门 -->
+    <select id="selectNewExplainDispatch" resultType="com.cloud.dips.gov.api.vo.CommonVO">
+		SELECT
+		gr.relation_id as dispatchId,
+			o.name as dispatchName	
+		FROM
+			gov_relation AS gr
+		LEFT JOIN gov_policy_organization AS o ON gr.correlation_id = o.id
+		LEFT JOIN gov_relation_type AS rt ON rt.number = 'gov_explain_organization'
+		WHERE gr.node = 'explain' AND gr.relation_id in 
+		<foreach collection="dispatchId" index="index" item="item"
+				separator="," open="(" close=")">
+			#{item}
+		</foreach>
+		 AND gr.type_id = rt.id
+	</select>
+     <!-- 重构查询标签 -->
+    <select id="selectNewExplainTag" resultType="com.cloud.dips.gov.api.vo.CommonVO">
+		SELECT
+			gtr.relation_id as relationId,
+            gt.name as tagName,
+            gt.id as tagId  
+         FROM
+			gov_tag_relation AS gtr
+		LEFT JOIN gov_tag_relation_type AS rt ON rt.type_number = 'def'
+		LEFT JOIN gov_tag AS gt ON gt.id = gtr.tag_id
+		WHERE gtr.node = 'explain' AND gtr.relation_id in 
+		<foreach collection="tagApiId" index="index" item="item"
+				separator="," open="(" close=")">
+			#{item}
+		</foreach>
+		AND gtr.type_id = rt.id
+		GROUP BY
+			gt.id
+	</select>
+</mapper>

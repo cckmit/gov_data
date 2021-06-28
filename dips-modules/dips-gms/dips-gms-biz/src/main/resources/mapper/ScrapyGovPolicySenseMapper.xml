@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.cloud.dips.gov.mapper.ScrapyGovPolicySenseMapper">
+
+	<!-- 可根据自己的需求，是否要使用 -->
+    <resultMap type="com.cloud.dips.gov.api.entity.ScrapyGovPolicySense" id="scrapyGovPolicySenseMap">
+        <result property="id" column="id"/>
+        <result property="title" column="title"/>
+        <result property="keywords" column="keywords"/>
+        <result property="introduce" column="introduce"/>
+        <result property="publishTime" column="publish_time"/>
+        <result property="source" column="source"/>
+        <result property="summary" column="summary"/>
+        <result property="text" column="text"/>
+        <result property="tag" column="tag"/>
+        <result property="delFlag" column="is_deleted"/>
+        <result property="creatorId" column="creator_id"/>
+		<result column="examine_status" property="examineStatus" />
+		<result column="examine_user_id" property="examineUser" />
+		<result column="examine_date" property="examineDate" />
+		<result column="retreat_count" property="retreatCount" />
+		<result column="retreat_user" property="retreatUser" />
+		<result column="retreat_content" property="retreatContent" />
+		<result column="processor_id" property="processorId" />
+    </resultMap>
+
+    <select id="selectScrapyPolicySenseList" resultMap="scrapyGovPolicySenseMap">
+      SELECT
+           s.*
+      FROM
+           scrapy_gov_policy_sense s
+	  LEFT JOIN gov_user AS u ON u.id = s.creator_id
+      WHERE
+      		s.is_deleted != '1'
+        <if test="title != null and title != ''">
+			AND s.title LIKE CONCAT('%',#{title},'%')
+		</if>
+		<if test="username != null and username != ''">
+			AND u.username = #{username}
+		</if>
+        <if test="exceptExamined != null and exceptExamined != ''">
+            <if test="exceptExamined == 'true'">
+                AND s.is_deleted != '2'
+            </if>
+             <if test="exceptExamined == 'false'">
+                AND s.is_deleted = '2'
+            </if>
+        </if>
+	  ORDER BY 
+	    <if test="prop != null and prop != ''">
+            <if test="'publishTime' == prop">
+                <if test="order == 'descending'">
+                    s.publish_time DESC,
+                </if>
+                <if test="order == 'ascending'">
+                    s.publish_time ASC,
+                </if>
+            </if>
+        </if>
+	 s.is_deleted, s.id DESC
+    </select>
+
+	<select id="getRecyclePage" resultMap="scrapyGovPolicySenseMap">
+		SELECT
+			s.*
+		FROM
+			scrapy_gov_policy_sense s
+		LEFT JOIN gov_user AS u ON u.id = s.creator_id
+		WHERE
+			s.is_deleted = '1'
+		<if test="title != null and title != ''">
+			AND s.title LIKE CONCAT('%',#{title},'%')
+		</if>
+		<if test="username != null and username != ''">
+			AND u.username = #{username}
+		</if>
+		ORDER BY s.id DESC
+	</select>
+
+</mapper>

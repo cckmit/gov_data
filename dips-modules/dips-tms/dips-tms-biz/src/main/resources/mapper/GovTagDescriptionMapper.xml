@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+/*
+ *
+ * Copyright (c) 2018-2025, ZB All rights reserved.
+ *
+ * Author: ZB
+ *
+ */
+  -->
+
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.cloud.dips.tag.mapper.GovTagDescriptionMapper">
+	<!-- 通用查询映射结果 -->
+	<resultMap id="BaseResultMap" type="com.cloud.dips.tag.api.entity.GovTagDescription">
+		<id column="id" property="descriptionId"/>
+		<result column="description" property="description"/>
+		<result column="tag_id" property="tagId"/>
+		<result column="create_time" property="createTime"/>
+		<result column="creator_id" property="creatorId"/>
+	</resultMap>
+
+	<!-- govTagDescriptionVo结果集 -->
+	<resultMap id="govTagDescriptionVoResultMap" type="com.cloud.dips.tag.api.vo.GovTagDescriptionVO">
+		<id column="id" property="descriptionId"/>
+		<result column="description" property="description"/>
+		<result column="tag_id" property="tagId"/>
+		<result column="create_time" property="createTime"/>
+		<result column="creator_id" property="creatorId"/>
+		<result column="creatorRealName" property="creatorRealName"/>
+	</resultMap>
+	
+	<sql id="govTagDescriptionVO">
+		SELECT
+            td.*,
+            u.real_name AS creatorRealName
+        FROM
+            gov_tag_description AS td
+            LEFT JOIN gov_user AS u ON u.id = td.creator_id
+    </sql>
+    
+    <select id="selectAllPage" resultMap="govTagDescriptionVoResultMap">
+		<include refid="govTagDescriptionVO"/>
+        WHERE
+        	1 = 1
+        <if test="tagId != null and tagId != ''">
+			and td.tag_id = #{tagId}
+		</if>
+    </select>
+
+	<!--根据标签Id删除标签描述-->
+	<delete id="deleteByTagId">
+		DELETE FROM gov_tag_description WHERE tag_id = #{tagId}
+	</delete>
+
+</mapper>

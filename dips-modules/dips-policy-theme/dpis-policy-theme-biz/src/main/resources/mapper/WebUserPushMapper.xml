@@ -1,0 +1,217 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.cloud.gov.theme.mapper.WebUserPushMapper">
+
+	<!-- 可根据自己的需求，是否要使用 -->
+    <resultMap type="com.cloud.dips.theme.api.entity.WebUserPush" id="webUserPushMap">
+        <result property="id" column="id"/>
+        <result property="webUserId" column="web_user_id"/>
+        <result property="policyId" column="policy_id"/>
+        <result property="policyType" column="policy_type"/>
+        <result property="isDeleted" column="is_deleted"/>
+        <result property="createTime" column="create_time"/>
+        <result property="modifiedTime" column="modified_time"/>
+        <result property="title" column="title"/>
+        <result property="status" column="status"/>
+        <result property="summary" column="summary"/>
+        <result property="publishTime" column="publish_time"/>
+    </resultMap>
+
+	<!-- 批量增加推送列表值（唯一） -->
+	<insert id="insertUniquePush" parameterType="java.util.List" useGeneratedKeys="true" keyProperty="id">
+		INSERT IGNORE INTO web_user_push (web_user_id,policy_id,mark,title) 
+		VALUE 
+		<foreach collection="pushList" item="item" index="index" separator=",">
+		(#{item.webUserId},#{item.policyId},#{item.mark},#{item.title})
+		</foreach>
+	</insert>
+	<select id="selectDictLabelByKey" resultType="String">
+		SELECT
+			d.value
+		FROM
+			gov_dict_value AS d
+		WHERE
+			d.key = #{key} AND d.dict_id = (SELECT id FROM gov_dict WHERE number = #{number})
+	</select>
+	<select id="queryPushByTheme" resultType="com.cloud.dips.theme.api.vo.WebUserPushVO">
+		SELECT
+			a.id,
+			a.policy_id,
+			a.policy_type,
+			a.title,
+			a.summary,
+			a.publish_time,
+			a.theme,
+			a.tag_list,
+			a.theme_name
+		FROM
+			web_user_push a
+		WHERE
+			a.web_user_id=#{webUserId}
+		AND	
+			find_in_set(#{theme}, a.theme)		
+		ORDER BY
+			a.publish_time DESC	
+	</select>
+	<select id="selectEmailUser" resultType="com.cloud.dips.theme.api.dto.SendEmailToClineDTO">
+		SELECT
+			web_user_id as id,mark,title,policy_id as policyId
+		FROM
+			web_user_push
+		WHERE
+			is_push = 0
+	</select>
+	<select id="selectEmailAddress" resultType="com.cloud.dips.theme.api.dto.SendEmailToClineDTO">
+		 SELECT
+			b.id,
+			b.username AS userName,
+			b.email
+		FROM
+			web_user_contact a
+		LEFT JOIN gov_user b ON a.web_users_id = b.id
+		WHERE
+			a.is_mail=1
+	</select>
+	<select id="selectPushUser" resultType="Integer">
+	 	SELECT
+			web_users_id
+		FROM
+			web_user_contact
+		WHERE
+			is_mail=1
+	</select>
+	<select id="selectRelationId" resultType="Integer">
+		SELECT 
+			relation_id 
+		FROM 
+			gov_tag_relation   
+		WHERE 
+		 	node in('gov_general_policy','declare')
+		AND
+			tag_id IN
+		<foreach collection="tagStatus.split(',')" index="index" item="item"
+				separator="," open="(" close=")">
+			#{item}
+			</foreach>
+	</select>
+	<!-- 根据标签订阅 -->
+	<resultMap id="relationResultMap" type="com.cloud.dips.gov.api.vo.SortDataVO">
+		<id property="id" column="id"/>
+		<result property="title" column="title"/>
+		<result property="summary" column="summary"/>
+		<result property="publishTime" column="publish_time"/>
+		<result property="theme" column="theme"/>
+		<result property="mark" column="mark"/>
+		<collection property="tagList" select="selectTagTest" column="{tagId=id,tagMark=mark}">
+		</collection>
+	</resultMap>
+	<select id="selectPolicyById" resultMap="relationResultMap">
+		SELECT 
+			a.*
+		FROM 
+			themefortwopolicy a
+		WHERE
+			a.publish_time BETWEEN #{beforeMonth} AND #{currentMonth}
+		AND	 
+			a.id IN
+		<foreach collection="policyId" index="index" item="item"
+				separator="," open="(" close=")">
+			#{item}
+			</foreach>
+		<if test="mark != null and mark != ''">
+		AND	a.mark=#{mark}
+		</if>
+		ORDER BY
+		a.publish_time DESC
+	</select>
+	<resultMap id="GovTagRelationVOMap" type="com.cloud.dips.gov.api.vo.CommonVO">
+		<id column="tagId" property="commonId"/>
+		<result column="tagName" property="commonName"/>
+	</resultMap>
+	<select id="selectTagTest" resultMap="GovTagRelationVOMap">
+		<if test="tagMark == 'declare'">
+		SELECT
+            gt.id AS tagId,
+            gt.name AS tagName
+		FROM
+			gov_tag_relation AS gtr
+		LEFT JOIN gov_tag_relation_type AS rt ON rt.type_number = 'def'
+		LEFT JOIN gov_tag AS gt ON gt.id = gtr.tag_id
+		WHERE gtr.node = 'declare' AND gtr.relation_id = #{tagId} AND gtr.type_id = rt.id
+		</if>
+		<if test="tagMark == 'general'">
+		SELECT
+            gt.id as tagId,
+            gt.name as tagName
+		FROM
+			gov_tag_relation AS gtr
+		LEFT JOIN gov_tag_relation_type AS rt ON rt.type_number = 'def'
+		LEFT JOIN gov_tag AS gt ON gt.id = gtr.tag_id
+		WHERE gtr.node = 'gov_general_policy' AND gtr.relation_id = #{tagId} AND gtr.type_id = rt.id
+		</if>
+		</select>
+	<!-- 根据订阅找到对应的政策 -->
+	<resultMap id="pushResultMap" type="com.cloud.dips.gov.api.vo.SortDataVO">
+		<id property="id" column="id"/>
+		<result property="title" column="title"/>
+		<result property="summary" column="summary"/>
+		<result property="publishTime" column="publish_time"/>
+		<result property="theme" column="theme"/>
+		<result property="mark" column="mark"/>
+		<collection property="themeList" select="selectThemeByKey" column="themeId=theme">
+		</collection>
+	</resultMap>
+	<select id="queryThemeForTwo" resultMap="pushResultMap">
+		SELECT 
+			* 
+		FROM 
+			themefortwopolicy a
+		WHERE
+			a.publish_time BETWEEN #{beforeMonth} AND #{currentMonth}	
+		<if test="themeId != null and themeId != ''">	
+		AND
+			<foreach collection="themeId.split(',')" index="index" item="item"
+				separator="or" open="(" close=")">
+			find_in_set(#{item}, a.theme)
+			</foreach>
+		</if>
+		<if test="scale != null and scale != ''">
+		AND 
+			<foreach collection="scale.split(',')" index="index" item="item"
+				separator="or" open="(" close=")">
+			find_in_set(#{item}, a.scale)
+			</foreach>
+		</if>
+		<if test="target != null and target != ''">
+		AND	
+			<foreach collection="target.split(',')" index="index" item="item"
+				separator="or" open="(" close=")">
+			find_in_set(#{item}, a.target)
+			</foreach>
+		</if>
+		<if test="region != null and region != '' and region != '0'.toString()">
+		AND	
+		<foreach collection="region.split(',')" index="index" item="item"
+				separator="or" open="(" close=")">
+			find_in_set(#{item}, a.region_arr)
+			</foreach>
+		</if>
+		<if test="mark != null and mark != ''">
+		AND	a.mark=#{mark}
+		</if>
+		ORDER BY
+		a.publish_time DESC
+	</select>
+		<!-- 重写优化主题查询语句（暂订阅用） -->
+	<select id="selectThemeByKey" resultType="String">
+			SELECT d.value FROM gov_dict_value AS d 
+			LEFT JOIN  gov_dict b ON b.id = d.dict_id WHERE  
+			b.number = 'POLICY_THEME' 
+			AND d.key IN 
+			<foreach collection="themeId.split(',')" index="index" item="item"
+				separator="," open="(" close=")">
+					#{item}
+			</foreach>
+	</select>
+</mapper>

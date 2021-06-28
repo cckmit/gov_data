@@ -1,0 +1,33 @@
+# spring security 配置
+security:
+  oauth2:
+    client:
+      client-id: dips
+      client-secret: dips
+      scope: server
+
+# 数据源
+spring:
+  datasource:
+    type: com.zaxxer.hikari.HikariDataSource
+    driver-class-name: com.mysql.jdbc.Driver
+    username: root
+#    password: guomai168
+    password: Gov20130528
+    #本地数据库
+    #url: jdbc:mysql://192.168.199.157:3306/dips_cloud_gov?characterEncoding=utf8&zeroDateTimeBehavior=convertToNull&useSSL=false
+    #测试数据库
+#    url: jdbc:mysql://115.233.227.46:13315/dips_cloud_gov?characterEncoding=utf8&zeroDateTimeBehavior=convertToNull&useSSL=false&allowMultiQueries=true
+    #正式数据库
+    url: jdbc:mysql://118.31.60.34:3306/dips_cloud_gov?characterEncoding=utf8&zeroDateTimeBehavior=convertToNull&useSSL=false
+
+# swagger相关配置,覆盖全局配置
+swagger:
+  authorization:
+    authorization-scope-list:
+      - scope: 'server'
+        description: 'server all'
+      - scope: 'read'
+        description: 'read all'
+      - scope: 'write'
+        description: 'access all'

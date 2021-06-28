@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.cloud.dips.gov.mapper.ScrapyGovOrganizationMapper">
+
+	<resultMap type="com.cloud.dips.gov.api.entity.ScrapyGovOrganization" id="scrapyGovOrganizationMap">
+		<result property="id" column="id" />
+		<result property="name" column="name" />
+		<result property="level" column="level" />
+		<result property="classification" column="classification" />
+		<result property="url" column="url" />
+		<result property="introduce" column="introduce" />
+		<result property="address" column="address" />
+		<result property="tag" column="tag" />
+		<result property="creatorId" column="creator_id" />
+		<result property="delFlag" column="is_deleted" />
+	</resultMap>
+
+	<select id="listDictByNumber" resultType="string">
+		SELECT
+			d.value
+		FROM
+			gov_dict_value AS d
+		WHERE
+			d.dict_id = (SELECT id FROM gov_dict WHERE number = #{number})
+	</select>
+
+	<select id="selectDictKeyByNumberAndValue" resultType="String">
+		SELECT
+			d.key
+		FROM
+			gov_dict_value AS d
+		WHERE
+			d.dict_id = (SELECT id FROM gov_dict WHERE number = #{number}) AND d.value = #{value}
+	</select>
+
+	<select id="selectOrganizationPage" resultMap="scrapyGovOrganizationMap">
+		SELECT
+			o.id,
+			o.name,
+			o.level,
+			o.classification,
+			o.url,
+			o.introduce,
+			o.address,
+			o.tag,
+			o.is_deleted
+		FROM scrapy_gov_organization AS o
+		LEFT JOIN gov_user AS u ON u.id = o.creator_id
+		<where>
+		<choose>
+			<when test="null == status or '' == status">
+				o.is_deleted != '1'
+			</when>
+			<when test='"2" == status'>
+				o.is_deleted = '2'
+			</when>
+			<when test='"0" == status'>
+				o.is_deleted = '0'
+			</when>
+			<otherwise>
+			</otherwise>
+		</choose>
+		<if test="title != null and title != ''">
+			AND o.name LIKE CONCAT('%',#{title},'%')
+		</if>
+        <if test="exceptExamined != null and exceptExamined != ''">
+            <if test="exceptExamined == 'true'">
+                AND o.is_deleted != '2'
+            </if>
+            <if test="exceptExamined == 'false'">
+                AND o.is_deleted = '2'
+            </if>
+        </if>
+        </where> 
+		ORDER BY 
+		<if test="prop != null and prop != ''">
+            <if test="'publishTime' == prop">
+                <if test="order == 'descending'">
+                    o.publish_time DESC,
+                </if>
+                <if test="order == 'ascending'">
+                    o.publish_time ASC,
+                </if>
+            </if>
+        </if>
+		o.is_deleted, o.id DESC
+	</select>
+
+
+	<select id="getRecyclePage" resultMap="scrapyGovOrganizationMap">
+		SELECT
+			o.id,
+			o.name,
+			o.level,
+			o.classification,
+			o.url,
+			o.introduce,
+			o.address,
+			o.tag,
+			o.is_deleted
+		FROM scrapy_gov_organization AS o
+		LEFT JOIN gov_user AS u ON u.id = o.creator_id
+		WHERE o.is_deleted = '1'
+		<if test="title != null and title != ''">
+			AND o.name LIKE CONCAT('%',#{title},'%')
+		</if>
+		<if test="username != null and username != ''">
+			AND u.username = #{username}
+		</if>
+		ORDER BY o.id DESC
+	</select>
+
+	<select id="recycleRecover">
+		UPDATE scrapy_gov_organization SET is_deleted = '0' WHERE id = #{id}
+	</select>
+
+</mapper>

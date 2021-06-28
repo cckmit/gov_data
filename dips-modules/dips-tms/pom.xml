@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <parent>
+    <groupId>com.cloud</groupId>
+    <artifactId>dips-modules</artifactId>
+    <version>${dips.version}</version>
+  </parent>
+  <artifactId>dips-tms</artifactId>
+  <name>dips-tms</name>
+  <description>dips 标签管理模块</description>
+  <packaging>pom</packaging>
+  <modules>
+  	<module>dips-tms-api</module>
+  	<module>dips-tms-biz</module>
+  </modules>
+</project>

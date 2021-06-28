@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  ~
+  ~      Copyright (c) 2018-2025, RCG All rights reserved.
+  ~
+  -->
+
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.cloud.dips.admin.mapper.SysDeptMapper">
+
+	<!-- 通用查询映射结果 -->
+	<resultMap id="BaseResultMap" type="com.cloud.dips.admin.api.entity.SysDept">
+		<id column="id" property="id"/>
+		<result column="name" property="name"/>
+		<result column="order_num" property="orderNum"/>
+		<result column="create_time" property="createTime"/>
+		<result column="modified_time" property="modifiedTime"/>
+		<result column="is_deleted" property="isDeleted"/>
+		<result column="city_id" property="cityId"/>
+	</resultMap>
+	
+	<resultMap type="com.cloud.dips.admin.api.vo.DeptVO" id="DeptVOMap">
+		<id column="id" property="id"/>
+		<result column="name" property="name"/>
+		<result column="orderNum" property="orderNum"/>
+		<result column="createTime" property="createTime"/>
+		<result column="modifiedTime" property="modifiedTime"/>
+		<result column="isDeleted" property="isDeleted"/>
+		<result column="parentId" property="parentId"/>
+		<result column="cityId" property="cityId"/>
+		<result column="cityName" property="cityName"/>
+	</resultMap>
+
+	<!-- 通用查询结果列 -->
+	<sql id="Base_Column_List">
+        id, parent_id AS parentId, name, order_num AS orderNum, create_time AS createTime, modified_time AS modifiedTime, is_deleted AS isDeleted
+    </sql>
+    
+    <select id="selectDeptVoById" resultMap="DeptVOMap">
+    SELECT
+    	t.id AS id,
+    	t.name AS name,
+    	t.order_num AS orderNum,
+    	t.create_time AS createTime,
+    	t.modified_time AS modifiedTime,
+    	t.is_deleted AS isDeleted,
+    	t.parent_id AS parentId,
+    	t.city_id AS cityId,
+    	c.name AS cityName
+    FROM
+		gov_dept t 
+	LEFT JOIN gov_city AS c on c.id=t.city_id 
+	WHERE t.id = #{id}
+    </select>
+
+	<!--关联查询部门列表-->
+	<select id="selectDeptDtoList" resultType="com.cloud.dips.admin.api.entity.SysDept">
+		SELECT
+			t.*
+		FROM
+			gov_dept t
+		LEFT JOIN gov_dept_relation dr ON t.id = dr.descendant
+		WHERE dr.ancestor = 0
+	</select>
+
+	<!--查询所有部门列表 -->
+	<select id="selectDeptList" resultType="com.cloud.dips.admin.api.vo.DeptCityVO">
+		SELECT
+		a.id AS cityId,
+		a.`name` AS 'cityName',
+		a.parent_id AS 'cityParentId',
+		d.id,
+		d.name
+
+		FROM gov_city a
+		LEFT JOIN gov_dept d ON d.city_id=a.id AND d.is_deleted=0
+		WHERE a.is_deleted=0
+
+	</select>
+
+     <select id="selectAllDeptList" resultMap="BaseResultMap">
+       SELECT
+    	   t.id AS id,
+    	   t.name AS name,
+    	   t.order_num AS orderNum,
+    	   t.create_time AS createTime,
+    	   t.modified_time AS modifiedTime,
+    	   t.is_deleted AS isDeleted,
+    	   t.parent_id AS parentId,
+    	   t.city_id AS cityId
+        FROM
+		  gov_dept t 
+    </select>
+</mapper>

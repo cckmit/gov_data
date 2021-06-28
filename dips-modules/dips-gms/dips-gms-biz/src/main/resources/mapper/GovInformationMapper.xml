@@ -1,0 +1,796 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.cloud.dips.gov.mapper.GovInformationMapper">
+
+    <resultMap type="com.cloud.dips.gov.api.vo.InformationVO" id="informationVOMap">
+        <result property="id" column="id"/>
+        <result property="title" column="title"/>
+        <result property="publishTime" column="publish_time"/>
+        <result property="summary" column="summary"/>
+        <result property="source" column="source"/>
+        <result property="views" column="views"/>
+        <result property="text" column="text"/>
+        <result property="author" column="author"/>
+        <result property="file" column="file"/>
+        <result property="url" column="url"/>
+        <result property="priority" column="priority"/>
+        <result property="creatorId" column="creator_id"/>
+        <result property="creatorName" column="creatorName"/>
+        <result property="createTime" column="create_time"/>
+        <result property="mark" column="mark"/>
+        <result property="regionArrString" column="region_arr"/>
+        <result property="examineStatus" column="examine_status"/>
+        <result property="examineUser" column="'examine_user_id'"/>
+        <result property="examineDate" column="examine_date"/>
+        <result property="retreatCount" column="retreat_count"/>
+        <result property="retreatUser" column="retreat_user"/>
+        <result property="processorId" column="processor_id"/>
+        <result property="scrapyId" column="scrapy_id"/>
+        <result property="commitTime" column="commit_time"/>
+        <result property="examineUserName" column="examineUserName"/>
+        <association property="next" select="selectInformationNext" column="{nextId=id,nextTime=publish_time}">
+        </association>
+        <association property="prev" select="selectInformationPrev" column="{prevId=id,prevTime=publish_time}">
+        </association>
+    </resultMap>
+		
+	<resultMap type="com.cloud.dips.gov.api.vo.InformationVO" id="informationPageMap">
+        <result property="id" column="id"/>
+        <result property="title" column="title"/>
+        <result property="publishTime" column="publish_time"/>
+        <result property="summary" column="summary"/>
+        <result property="source" column="source"/>
+        <result property="views" column="views"/>
+        <result property="text" column="text"/>
+        <result property="author" column="author"/>
+        <result property="file" column="file"/>
+        <result property="url" column="url"/>
+        <result property="priority" column="priority"/>
+        <result property="creatorId" column="creator_id"/>
+        <result property="creatorName" column="creatorName"/>
+        <result property="createTime" column="create_time"/>
+        <result property="mark" column="mark"/>
+        <result property="regionArrString" column="region_arr"/>
+        <result property="examineStatus" column="examine_status"/>
+        <result property="examineUser" column="'examine_user_id'"/>
+        <result property="examineDate" column="examine_date"/>
+        <result property="retreatCount" column="retreat_count"/>
+        <result property="retreatUser" column="retreat_user"/>
+        <result property="processorId" column="processor_id"/>
+        <result property="scrapyId" column="scrapy_id"/>
+        <result property="commitTime" column="commit_time"/>
+        <result property="examineUserName" column="examineUserName"/>
+    </resultMap>
+
+
+    <resultMap type="com.cloud.dips.gov.api.vo.InformationVO" id="informationVOWxMap">
+        <result property="id" column="id"/>
+        <result property="title" column="title"/>
+        <result property="publishTime" column="publish_time"/>
+        <result property="summary" column="summary"/>
+        <result property="source" column="source"/>
+        <result property="views" column="views"/>
+        <result property="text" column="text"/>
+        <result property="author" column="author"/>
+        <result property="file" column="file"/>
+        <result property="url" column="url"/>
+        <result property="priority" column="priority"/>
+        <result property="creatorId" column="creator_id"/>
+        <result property="creatorName" column="creatorName"/>
+        <result property="createTime" column="create_time"/>
+        <result property="mark" column="mark"/>
+        <result property="region" column="region"/>
+        <result property="examineStatus" column="examine_status"/>
+        <result property="examineUser" column="'examine_user_id'"/>
+        <result property="examineDate" column="examine_date"/>
+        <result property="retreatCount" column="retreat_count"/>
+        <result property="retreatUser" column="retreat_user"/>
+        <result property="processorId" column="processor_id"/>
+        <result property="scrapyId" column="scrapy_id"/>
+        <result property="commitTime" column="commit_time"/>
+        <collection property="tagList" column="id" select="selectTag">
+        </collection>
+    </resultMap>
+
+
+    <resultMap id="informationTag" type="com.cloud.dips.gov.api.vo.CommonVO">
+        <id column="govTagId" property="commonId"/>
+        <result column="govTagName" property="commonName"/>
+    </resultMap>
+
+    <sql id="selectInformation">
+		SELECT
+			information.*,
+            u.username AS creatorName
+		FROM
+			gov_policy_information AS information
+				LEFT JOIN gov_user AS u ON u.id = information.creator_id
+	</sql>
+
+	<sql id="selectInformations">
+		SELECT
+			information.id ,
+			information.title,
+			information.summary,
+			information.source,
+			information.views,
+			information.author,
+			information.file,
+			information.url,
+			information.priority,
+			information.create_time,
+			information.publish_time,
+			information.mark,
+			information.region,
+			information.mark
+
+		FROM
+			gov_policy_information AS information
+	</sql>
+
+    <sql id="selectInformationWx">
+		SELECT
+			information.id,
+			information.title,
+			information.publish_time,
+			information.creator_id
+
+		FROM
+			gov_policy_information AS information
+	</sql>
+    
+    <resultMap id="selfAndExaminePage" type="com.cloud.dips.gov.api.vo.InformationVO">
+        <id property="id" column="id"/>
+        <result property="title" column="title"/>
+        <result property="publishTime" column="publish_time"/>
+        <result property="examineStatus" column="examine_status"/>
+        <result property="creatorName" column="creatorName"/>
+        <result property="createTime" column="create_time"/>
+        <result property="retreatCount" column="retreat_count"/>
+        <result property="retreatContent" column="retreat_content"/>
+        <result property="examineUserName" column="examineUserName"/>
+    </resultMap>
+    
+    <select id="selectInformationVOList" resultMap="informationPageMap">
+        <include refid="selectInformation"/>
+        WHERE
+        information.is_deleted = "0"
+        AND information.examine_status=3
+        <if test="title != null and title != ''">
+            AND MATCH (information.title) AGAINST (#{title} IN BOOLEAN MODE)
+        </if>
+        <if test="source != null and source != ''">
+            AND information.source LIKE CONCAT('%',#{source},'%')
+        </if>
+        <if test="startTime != null and startTime != ''">
+            AND information.publish_time &gt;= #{startTime}
+        </if>
+        <if test="endTime != null and endTime != ''">
+            AND information.publish_time &lt;= #{endTime}
+        </if>
+        <if test="regionArr != null and regionArr != '' and regionArr != '0'.toString()">
+            AND information.region_arr LIKE CONCAT('%',#{regionArr})
+        </if>
+        <if test="username != null and username != ''">
+            AND u.username = #{username}
+        </if>
+        ORDER BY
+        <if test="sort == 'views'">
+            information.views DESC,
+        </if>
+        <if test="sort == 'time'">
+			information.publish_time DESC,
+		</if>
+        information.id DESC
+    </select>
+
+    <select id="selectInformationVOListForConsole" resultMap="informationPageMap">
+       SELECT
+            information.*,
+            u.username AS creatorName,
+        (select us.username from gov_user us where us.id=information.examine_user_id) as examineUserName
+        FROM
+            gov_policy_information AS information
+                LEFT JOIN gov_user AS u ON u.id = information.creator_id
+        WHERE
+        information.is_deleted = "0"
+        AND information.examine_status=3
+        <if test="title != null and title != ''">
+            AND information.title LIKE CONCAT('%',#{title},'%')
+        </if>
+        <if test="source != null and source != ''">
+            AND information.source LIKE CONCAT('%',#{source},'%')
+        </if>
+        <if test="startTime != null and startTime != ''">
+            AND information.publish_time &gt;= #{startTime}
+        </if>
+        <if test="endTime != null and endTime != ''">
+            AND information.publish_time &lt;= #{endTime}
+        </if>
+        <if test="regionArr != null and regionArr != '' and regionArr != '0'.toString()">
+            AND information.region_arr LIKE CONCAT('%',#{regionArr})
+        </if>
+        <if test="username != null and username != ''">
+            AND u.username = #{username}
+        </if>
+        ORDER BY
+        <if test="priority != null and priority != ''">
+            information.priority,
+        </if>
+        <if test="sort == 'views'">
+            information.views DESC,
+        </if>
+        <if test="sort == 'time'">
+            information.publish_time DESC,
+        </if>
+        <if test="prop != null and prop != ''">
+            <if test="'publishTime' == prop">
+                <if test="order == 'descending'">
+                    information.publish_time DESC,
+                </if>
+                <if test="order == 'ascending'">
+                    information.publish_time ASC,
+                </if>
+            </if>
+            <if test="'examineDate' == prop">
+                <if test="order == 'descending'">
+                    information.examine_date DESC,
+                </if>
+                <if test="order == 'ascending'">
+                    information.examine_date ASC,
+                </if>
+            </if>
+        </if>
+        information.examine_date DESC,information.publish_time DESC
+    </select>
+
+    <select id="selectInformationWechat" resultMap="informationVOWxMap">
+        <include refid="selectInformationWx"/>
+        WHERE
+        information.is_deleted = "0"
+        AND information.examine_status=3
+        <if test="title != null and title != ''">
+            AND information.title LIKE CONCAT('%',#{title},'%')
+        </if>
+        <if test="source != null and source != ''">
+            AND information.source LIKE CONCAT('%',#{source},'%')
+        </if>
+        <if test="startTime != null and startTime != ''">
+            AND information.publish_time &gt;= #{startTime}
+        </if>
+        <if test="endTime != null and endTime != ''">
+            AND information.publish_time &lt;= #{endTime}
+        </if>
+        <if test="regionArr != null and regionArr != '' and regionArr != '0'.toString()">
+            AND information.region_arr LIKE CONCAT('%',#{regionArr})
+        </if>
+        <if test="username != null and username != ''">
+            AND u.username = #{username}
+        </if>
+        ORDER BY
+        <if test="priority != null and priority != ''">
+            information.priority,
+        </if>
+        information.publish_time DESC,
+        information.id DESC
+    </select>
+
+
+    <select id="selectRecyclePage" resultMap="informationVOMap">
+        <include refid="selectInformation"/>
+        WHERE
+        information.is_deleted = '1'
+        <if test="title!=null and title!=''">
+            AND information.title LIKE CONCAT('%',#{title},'%')
+        </if>
+        <if test="username != null and username != ''">
+            AND u.username = #{username}
+        </if>
+        ORDER BY information.id DESC
+    </select>
+
+    <select id="selectTag" resultMap="informationTag">
+		select tag.name as govTagName,
+			   tag.id   as govTagId
+		from gov_tag as tag
+				 left join gov_tag_relation gtagr on tag.id = gtagr.tag_id
+				 left join gov_policy_information information on gtagr.relation_id = information.id
+		where gtagr.node = 'gov_information'
+		  and gtagr.relation_id = #{id}
+		  GROUP BY
+			tag.id
+	</select>
+	
+	<select id="checkTag" resultType="java.lang.Integer">
+        select 
+            count(*)
+        from gov_tag as tag
+                 left join gov_tag_relation gtagr on tag.id = gtagr.tag_id
+                 left join gov_policy_information information on gtagr.relation_id = information.id
+        where gtagr.node = 'gov_information'
+          and gtagr.relation_id = #{id}
+    </select>
+
+    <select id="selectInformationById" resultMap="informationVOMap">
+        <include refid="selectInformations"/>
+        WHERE
+        	information.is_deleted = '0'
+        AND 
+        	information.examine_status=3 
+        AND 
+        	information.id = #{id}
+    </select>
+    
+    <select id="selectInformationByIdForConsole" resultMap="informationVOMap">
+        <include refid="selectInformation"/>
+        WHERE
+            information.is_deleted = '0'
+        AND 
+            information.id = #{id}
+    </select>
+
+    <select id="selectRecycleById" resultMap="informationVOMap">
+        <include refid="selectInformation"/>
+        WHERE
+        information.is_deleted = '1' AND information.id = #{id}
+    </select>
+
+    <!-- 前后id -->
+    <resultMap id="informationCommonVOMap" type="com.cloud.dips.gov.api.vo.CommonVO">
+        <result column="commonId" property="commonId"/>
+        <result column="commonName" property="commonName"/>
+    </resultMap>
+    <select id="selectInformationNext" resultMap="informationCommonVOMap">
+		SELECT
+			id    AS commonId,
+			title AS commonName
+	  	FROM
+	  		gov_policy_information
+	  	WHERE
+	  		ID = (
+		SELECT
+			(
+				CASE
+				WHEN (
+						SELECT A.G1+A.G2 FROM (SELECT
+						(
+							CASE
+							WHEN MIN(polGen.id) = #{nextId} THEN
+								0
+							ELSE
+								1
+							END
+						) G1,
+						(
+							CASE
+							WHEN COUNT(1) &gt; 1 THEN
+								1
+							ELSE
+								0
+							END
+						) G2
+					FROM
+						gov_policy_information AS polGen
+					WHERE
+						polGen.is_deleted = '0'
+					AND polGen.examine_status = 3
+					AND DATE_FORMAT(polGen.publish_time,'%Y-%m-%d %H:%i') = DATE_FORMAT(#{nextTime},'%Y-%m-%d %H:%i')
+					ORDER BY
+						polGen.publish_time DESC,
+						polGen.id DESC) A
+				) > 1 THEN
+					(
+						SELECT
+							polGen.id
+						FROM
+							gov_policy_information AS polGen
+						WHERE
+							polGen.is_deleted = '0'
+						AND polGen.examine_status = 3
+						AND polGen.ID &lt; #{nextId}
+						AND DATE_FORMAT(polGen.publish_time,'%Y-%m-%d %H:%i') &lt;= DATE_FORMAT(#{nextTime},'%Y-%m-%d %H:%i')
+						ORDER BY
+							polGen.publish_time DESC,
+							polGen.id DESC
+						LIMIT 0,
+						1
+					)
+				ELSE
+					(
+						SELECT
+							polGen.id
+						FROM
+							gov_policy_information AS polGen
+						WHERE
+							polGen.is_deleted = '0'
+						AND polGen.examine_status = 3
+						AND polGen.ID <![CDATA[ <> ]]> #{nextId}
+						AND DATE_FORMAT(polGen.publish_time,'%Y-%m-%d %H:%i') &lt; DATE_FORMAT(#{nextTime},'%Y-%m-%d %H:%i')
+						ORDER BY
+							polGen.publish_time DESC,
+							polGen.id DESC
+						LIMIT 0,
+						1
+					)
+				END
+			) AS GID
+		FROM
+			DUAL
+	)
+	</select>
+    <select id="selectInformationPrev" resultMap="informationCommonVOMap">
+		SELECT
+			id    AS commonId,
+			title AS commonName
+	  	FROM
+	  		gov_policy_information
+	  	WHERE
+	  	ID = (
+		SELECT
+			(
+				CASE
+				WHEN (
+						SELECT A.G1+A.G2 FROM (SELECT
+						(
+							CASE
+							WHEN max(polGen.id) = #{prevId} THEN
+								0
+							ELSE
+								1
+							END
+						) G1,
+						(
+							CASE
+							WHEN COUNT(1) &gt; 1 THEN
+								1
+							ELSE
+								0
+							END
+						) G2
+					FROM
+						gov_policy_information AS polGen
+					WHERE
+						polGen.is_deleted = '0'
+					AND polGen.examine_status = 3
+					AND unix_timestamp(polGen.publish_time) = unix_timestamp(#{prevTime})
+					ORDER BY
+						polGen.publish_time,
+						polGen.id) A
+				) &gt; 1 THEN
+					(
+						SELECT
+							polGen.id
+						FROM
+							gov_policy_information AS polGen
+						WHERE
+							polGen.is_deleted = '0'
+						AND polGen.examine_status = 3
+						AND polGen.ID &gt; #{prevId}
+						AND unix_timestamp(polGen.publish_time) &gt;= unix_timestamp(#{prevTime})
+						ORDER BY
+							polGen.publish_time,
+							polGen.id
+						LIMIT 0,
+						1
+					)
+				ELSE
+					(
+						SELECT
+							polGen.id
+						FROM
+							gov_policy_information AS polGen
+						WHERE
+							polGen.is_deleted = '0'
+						AND polGen.examine_status = 3
+						AND polGen.ID <![CDATA[ <> ]]> #{prevId}
+						AND unix_timestamp(polGen.publish_time) &gt; unix_timestamp(#{prevTime})
+						ORDER BY
+							polGen.publish_time,
+							polGen.id
+						LIMIT 0,
+						1
+					)
+				END
+			) AS GID
+		FROM
+			DUAL
+	)
+	</select>
+
+    <select id="selectInformationVOPageByTagId" resultType="com.cloud.dips.gov.api.vo.InformationVO">
+		SELECT
+			information.id,
+			information.title
+		FROM
+			gov_tag_relation AS gtr
+				LEFT JOIN gov_tag_relation_type AS rt ON rt.type_number = 'def' AND gtr.type_id = rt.id
+				LEFT JOIN gov_tag AS gt ON gt.id = gtr.tag_id
+				LEFT JOIN gov_policy_information AS information ON gtr.relation_id = information.id
+		WHERE gtr.node = 'gov_information'
+		  AND gt.id = #{tagId}
+		  AND information.is_deleted = '0'
+		  AND information.examine_status='3'
+	</select>
+
+    <select id="repeat" resultType="com.cloud.dips.gov.api.entity.GovInformation">
+		SELECT
+			id,
+			title
+		FROM
+			gov_policy_information
+		WHERE
+			is_deleted = '0'
+		  AND title = #{title}
+	</select>
+    <!-- 全局模糊搜索 -->
+    <select id="selectVagueInformation" resultMap="informationVOMap">
+        SELECT
+            information.*,
+            u.username AS creatorName
+        FROM
+            gov_policy_information AS information
+                LEFT JOIN gov_user AS u ON u.id = information.creator_id
+        WHERE
+        information.is_deleted = "0"
+        AND
+        information.title LIKE CONCAT('%',#{title},'%')
+        AND
+        information.examine_status=3
+        ORDER BY
+        <if test="views != null and views != ''">
+            information.views DESC,
+        </if>
+        <if test="time!=null and time!=''">
+            information.publish_time DESC,
+        </if>
+        information.id DESC
+        LIMIT
+        #{page},#{size}
+    </select>
+
+    <select id="selectSelfPage" resultMap="informationPageMap">
+        SELECT
+            information.*,
+            u.username AS creatorName
+        FROM
+            gov_policy_information AS information
+                LEFT JOIN gov_user AS u ON u.id = information.creator_id
+        WHERE
+        information.is_deleted = "0"
+        <if test="title != null and title != ''">
+            AND information.title LIKE CONCAT('%',#{title},'%')
+        </if>
+        <if test="processorId != null and processorId != ''">
+            AND processor_id = #{processorId}
+        </if>
+        <if test="examineStatus != null and examineStatus != ''">
+            AND information.examine_status = #{examineStatus}
+        </if>
+        <if test="source != null and source != ''">
+            AND information.source LIKE CONCAT('%',#{source},'%')
+        </if>
+        <if test="startTime != null and startTime != ''">
+            AND information.publish_time &gt;= #{startTime}
+        </if>
+        <if test="endTime != null and endTime != ''">
+            AND information.publish_time &lt;= #{endTime}
+        </if>
+        <if test="regionArr != null and regionArr != '' and regionArr != '0'.toString()">
+            AND information.region_arr LIKE CONCAT('%',#{regionArr})
+        </if>
+        ORDER BY
+        <if test="prop != null and prop != ''">
+            <if test="'publishTime' == prop">
+                <if test="order == 'descending'">
+                    information.publish_time DESC,
+                </if>
+                <if test="order == 'ascending'">
+                    information.publish_time ASC,
+                </if>
+            </if>
+            <if test="'examineDate' == prop">
+                <if test="order == 'descending'">
+                    information.examine_date DESC,
+                </if>
+                <if test="order == 'ascending'">
+                    information.examine_date ASC,
+                </if>
+            </if>
+            <if test="'createTime' == prop">
+                <if test="order == 'descending'">
+                    information.create_time DESC,
+                </if>
+                <if test="order == 'ascending'">
+                    information.create_time ASC,
+                </if>
+            </if>
+        </if>
+		information.examine_status=6 desc,  information.create_time DESC
+    </select>
+
+    <select id="selectExaminePage" resultMap="informationPageMap">
+         SELECT
+            information.*,
+            u.username AS creatorName,
+        (select us.username from gov_user us where us.id=information.examine_user_id) as examineUserName
+        FROM
+            gov_policy_information AS information
+                LEFT JOIN gov_user AS u ON u.id = information.creator_id
+        WHERE
+        information.is_deleted = "0"
+        AND examine_status in (1,2)
+        <if test="title != null and title != ''">
+            AND information.title LIKE CONCAT('%',#{title},'%')
+        </if>
+        <if test="processorName != null and processorName != ''">
+            AND u.username = #{processorName}
+        </if>
+        <if test="examineStatus != null and examineStatus != ''">
+            AND information.examine_status = #{examineStatus}
+        </if>
+        <if test="source != null and source != ''">
+            AND information.source LIKE CONCAT('%',#{source},'%')
+        </if>
+        <if test="startTime != null and startTime != ''">
+            AND information.publish_time &gt;= #{startTime}
+        </if>
+        <if test="endTime != null and endTime != ''">
+            AND information.publish_time &lt;= #{endTime}
+        </if>
+        <if test="regionArr != null and regionArr != '' and regionArr != '0'.toString()">
+            AND information.region_arr LIKE CONCAT('%',#{regionArr})
+        </if>
+        ORDER BY
+        <if test="prop != null and prop != ''">
+            <if test="'publishTime' == prop">
+                <if test="order == 'descending'">
+                    information.publish_time DESC,
+                </if>
+                <if test="order == 'ascending'">
+                    information.publish_time ASC,
+                </if>
+            </if>
+            <if test="'examineDate' == prop">
+                <if test="order == 'descending'">
+                    information.examine_date DESC,
+                </if>
+                <if test="order == 'ascending'">
+                    information.examine_date ASC,
+                </if>
+            </if>
+            <if test="'commitTime' == prop">
+                <if test="order == 'descending'">
+                    information.commit_time DESC,
+                </if>
+                <if test="order == 'ascending'">
+                    information.commit_time ASC,
+                </if>
+            </if>
+        </if>
+        information.commit_time DESC,information.publish_time DESC
+    </select>
+
+    <select id="updateForGiveUpProcess">
+       UPDATE scrapy_gov_policy_general 
+        SET is_deleted = "0" 
+        WHERE
+            processor_id = #{processorId}
+            AND id = #{scrapyId}
+    </select>
+
+    <select id="updateForGiveUpProcessToInformation">
+       UPDATE scrapy_gov_information 
+        SET is_deleted = "0" 
+        WHERE
+            processor_id = #{processorId}
+            AND id = #{scrapyId}
+    </select>
+
+    <select id="viewUp">
+       UPDATE gov_policy_information set views=views+1  WHERE id = #{id}
+    </select>
+
+    <!-- 统计模糊搜索的条数 -->
+    <select id="selectVagueCount" resultType="Integer">
+		SELECT
+			count(id)
+		FROM gov_policy_information information
+		WHERE 
+		information.is_deleted = "0"
+		AND
+			information.title LIKE CONCAT('%',#{title},'%')
+	</select>
+    <select id="selectRegionArr" resultType="String">
+		SELECT
+			a.region_arr
+		FROM
+			gov_policy_information AS a
+		WHERE a.id = #{id}
+	</select>
+
+    <!--返回标签匹配度结果-->
+    <resultMap id="informationVOResultMatchingMap" type="com.cloud.dips.gov.api.vo.InformationVO">
+        <id column="id" property="id"/>
+        <result property="title" column="title"/>
+        <result property="publishTime" column="publish_time"/>
+        <result property="relatedTags" column="gg"/>
+        <result property="mark" column="mark"/>
+    </resultMap>
+
+    <!--查询标签匹配度-->
+    <select id="selectMatching" resultMap="informationVOResultMatchingMap">
+        select
+        *
+
+        from
+
+        (
+        select * from
+        govpolicyinformation
+        where id not in (#{id})
+
+        )
+        sd
+        where
+        <foreach collection="tags" item="tag" index="index">
+            <if test="index==0">
+                FIND_IN_SET(#{tag}, sd.gg )
+            </if>
+            <if test="index>=1">
+                or FIND_IN_SET(#{tag}, sd.gg )
+
+            </if>
+        </foreach>
+        ORDER BY sd.publish_time DESC
+
+
+    </select>
+
+
+    <!--查询标签匹配度-->
+    <select id="selectCommonMatching" resultMap="informationVOResultMatchingMap">
+        select
+        *
+
+        from govgeneralpolicy_declare_common sd
+        where
+
+
+        <foreach collection="tags" item="id" index="index">
+            <if test="index==0">
+                FIND_IN_SET(#{id}, sd.gg )
+            </if>
+            <if test="index>=1">
+                or FIND_IN_SET(#{id}, sd.gg )
+
+            </if>
+        </foreach>
+
+        and sd.gg !=
+
+        #{ids}
+        ORDER BY sd.publish_time DESC
+    </select>
+    <!-- 重构查询正文 -->
+	<select id="selectInformationText" resultType="String">
+		SELECT text FROM gov_policy_information  WHERE id = #{id}
+	</select>
+     <!-- 重构查询标签 -->
+    <select id="selectNewInformationTag" resultType="com.cloud.dips.gov.api.vo.CommonVO">		
+		select tag.name as tagName,
+				tag.id as tagId,
+			   gtagr.relation_id  as relationId
+		from gov_tag as tag
+				 left join gov_tag_relation gtagr on tag.id = gtagr.tag_id
+				 left join gov_policy_information information on gtagr.relation_id = information.id
+		where gtagr.node = 'gov_information'
+		  and gtagr.relation_id in 
+		  <foreach collection="tagApiId" index="index" item="item"
+				separator="," open="(" close=")">
+			#{item}
+		</foreach>
+		  GROUP BY
+			tag.id	
+	</select>
+</mapper>

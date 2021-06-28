@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.cloud.dips.user.mapper.WebUsersMapper">
+
+	<!-- 可根据自己的需求，是否要使用 -->
+    <resultMap type="com.cloud.dips.admin.api.entity.SysUser" id="webUsersMap">
+		<id column="id" property="id"/>
+		<result column="username" property="username"/>
+		<result column="real_name" property="realName"/>
+		<result column="password" property="password"/>
+		<result column="phone" property="phone"/>
+		<result column="avatar" property="avatar"/>
+		<result column="salt" property="salt"/>
+		<result column="dept_id" property="deptId"/>
+		<result column="dept_name" property="deptName"/>
+		<result column="weixin_openid" property="weixinOpenid"/>
+		<result column="qq_openid" property="qqOpenid"/>
+		<result column="create_time" property="createTime"/>
+		<result column="modified_time" property="modifiedTime"/>
+		<result column="email"  property="email"/>
+		<result column="type" property="type"/>
+		<result column="is_deleted" property="isDeleted"/>
+    </resultMap>
+
+
+</mapper>

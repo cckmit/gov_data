@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.cloud.dips.raus.mapper.PreposeUserMapper">
+
+	<!-- 可根据自己的需求，是否要使用 -->
+    <resultMap type="com.cloud.dips.raus.api.entity.PreposeUser" id="preposeUserMap">
+        <result property="id" column="id"/>
+        <result property="userName" column="user_name"/>
+        <result property="createTime" column="create_time"/>
+        <result property="modifiedTime" column="modified_time"/>
+        <result property="theme" column="theme"/>
+        <result property="invalidTime" column="invalid_time"/>
+        <result property="token" column="token"/>
+        <result property="returnTimes" column="return_times"/>
+        <result property="permitThemeCounts" column="permit_theme_counts"/>
+        <result property="permitColumnCounts" column="permit_column_counts"/>
+        <result property="permitColumn" column="permit_column"/>
+    </resultMap>
+	<!-- 查找是否有相同的token -->
+	<select id="findHasToken" resultType="Integer">
+	SELECT count(id) FROM web_user_prepose WHERE token=#{tokenName}
+	</select>
+	<!-- 用户增加对应的信息(token,失效时间等) -->
+	<insert id="insertToken" parameterType="com.cloud.dips.raus.api.entity.PreposeUser"  useGeneratedKeys="true" keyProperty="id">
+	INSERT INTO web_user_prepose (`user_name`, create_time,modified_time,invalid_time,`token`,permit_theme_counts,permit_column_counts) 
+	VALUES (#{userName},now(),now(),#{invalidTime},#{token},#{permitThemeCounts},#{permitColumnCounts});
+	</insert>
+	<!-- 根据用户名查找主题限制个数,字段限制个数 -->
+	<select id="selectThemeCount" resultType="com.cloud.dips.raus.api.dto.PreposeUserDTO">
+	SELECT id,permit_theme_counts,permit_column_counts FROM web_user_prepose WHERE user_name=#{userName}
+	</select>
+</mapper>

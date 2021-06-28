@@ -1,0 +1,1427 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.cloud.dips.gov.mapper.GovPolicyGeneralMapper">
+    <resultMap id="govPolicyGeneralVOMap" type="com.cloud.dips.gov.api.vo.GeneralVO">
+        <result property="id" column="id"/>
+        <result property="title" column="title"/>
+        <result property="summary" column="summary"/>
+        <result property="source" column="source"/>
+        <result property="reference" column="reference"/>
+        <result property="issue" column="issue"/>
+        <result property="createTime" column="create_time"/>
+        <result property="modifiedTime" column="modified_time"/>
+        <result property="publishTime" column="publish_time"/>
+        <result property="effectTime" column="effect_time"/>
+        <result property="invalidTime" column="invalid_time"/>
+        <result property="attachment" column="attachment"/>
+        <result property="url" column="url"/>
+        <result property="style" column="style"/>
+        <result property="styleName" column="styleName"/>
+        <result property="level" column="level"/>
+        <result property="levelName" column="levelName"/>
+        <result property="timeliness" column="timeliness"/>
+        <result property="timelinessName" column="timelinessName"/>
+        <result property="stage" column="stage"/>
+        <result property="stageName" column="stageName"/>
+        <result property="formality" column="formality"/>
+        <result property="formalityName" column="formalityName"/>
+        <result property="creatorId" column="creator_id"/>
+        <result property="creatorName" column="creatorName"/>
+        <result property="target" column="target"/>
+        <result property="theme" column="theme"/>
+        <result property="scale" column="scale"/>
+        <result property="industry" column="industry"/>
+        <result property="views" column="views"/>
+        <result property="mark" column="mark"/>
+        <result property="examineStatus" column="examine_status"/>
+        <result property="examineUser" column="'examine_user_id'"/>
+        <result property="examineDate" column="examine_date"/>
+        <result property="retreatCount" column="retreat_count"/>
+        <result property="retreatUser" column="retreat_user"/>
+        <result property="processorId" column="processor_id"/>
+        <result property="scrapyId" column="scrapy_id"/>
+        <result property="regionArrString" column="region_arr"/>
+        <result property="commitTime" column="commit_time"/>
+        <association property="next" select="selectGeneralNext" column="{nextId=id,nextTime=publish_time}">
+        </association>
+        <association property="prev" select="selectGeneralPrev" column="{prevId=id,prevTime=publish_time}">
+        </association>
+    </resultMap>
+     <resultMap id="generalVOForConsole" type="com.cloud.dips.gov.api.vo.GeneralVO">
+        <result property="id" column="id"/>
+        <result property="title" column="title"/>
+        <result property="summary" column="summary"/>
+        <result property="source" column="source"/>
+        <result property="reference" column="reference"/>
+        <result property="issue" column="issue"/>
+        <result property="createTime" column="create_time"/>
+        <result property="modifiedTime" column="modified_time"/>
+        <result property="publishTime" column="publish_time"/>
+        <result property="effectTime" column="effect_time"/>
+        <result property="invalidTime" column="invalid_time"/>
+        <result property="text" column="text"/>
+        <result property="attachment" column="attachment"/>
+        <result property="url" column="url"/>
+        <result property="style" column="style"/>
+        <result property="styleName" column="styleName"/>
+        <result property="level" column="level"/>
+        <result property="levelName" column="levelName"/>
+        <result property="timeliness" column="timeliness"/>
+        <result property="timelinessName" column="timelinessName"/>
+        <result property="stage" column="stage"/>
+        <result property="stageName" column="stageName"/>
+        <result property="formality" column="formality"/>
+        <result property="formalityName" column="formalityName"/>
+        <result property="creatorId" column="creator_id"/>
+        <result property="creatorName" column="creatorName"/>
+        <result property="target" column="target"/>
+        <result property="theme" column="theme"/>
+        <result property="scale" column="scale"/>
+        <result property="industry" column="industry"/>
+        <result property="views" column="views"/>
+        <result property="mark" column="mark"/>
+        <result property="examineStatus" column="examine_status"/>
+        <result property="examineUser" column="'examine_user_id'"/>
+        <result property="examineDate" column="examine_date"/>
+        <result property="retreatCount" column="retreat_count"/>
+        <result property="retreatUser" column="retreat_user"/>
+        <result property="processorId" column="processor_id"/>
+        <result property="scrapyId" column="scrapy_id"/>
+        <result property="regionArrString" column="region_arr"/>
+        <result property="commitTime" column="commit_time"/>
+        <collection property="dispatchList" select="selectGeneralDispatch" column="id">
+        </collection>
+        <collection property="unionList" select="selectGeneralUnion" column="id">
+        </collection>
+        <collection property="tagList" select="selectGeneralTag" column="id">
+        </collection> 
+    </resultMap>
+     <resultMap id="selfAndExaminePage" type="com.cloud.dips.gov.api.vo.GeneralVO">
+        <id property="id" column="id"/>
+        <result property="title" column="title"/>
+        <result property="source" column="source"/>
+        <result property="publishTime" column="publish_time"/>
+        <result property="examineStatus" column="examine_status"/>
+        <result property="creatorName" column="creatorName"/>
+        <result property="createTime" column="create_time"/>
+        <result property="retreatCount" column="retreat_count"/>
+        <result property="retreatContent" column="retreat_content"/>
+        <result property="commitTime" column="commit_time"/>
+        <result property="examineUserName" column="examineUserName"/>
+    </resultMap>
+
+    <resultMap id="govPolicyGeneralPageVOMap" type="com.cloud.dips.gov.api.vo.GeneralVO">
+        <result property="id" column="id"/>
+        <result property="title" column="title"/>
+        <result property="publishTime" column="publish_time"/>
+        <result property="style" column="style"/>
+        <result property="styleName" column="styleName"/>
+        <result property="level" column="level"/>
+        <result property="levelName" column="levelName"/>
+        <result property="timeliness" column="timeliness"/>
+        <result property="timelinessName" column="timelinessName"/>
+        <result property="stage" column="stage"/>
+        <result property="stageName" column="stageName"/>
+        <result property="formality" column="formality"/>
+        <result property="formalityName" column="formalityName"/>
+        <result property="creatorId" column="creator_id"/>
+        <result property="creatorName" column="creatorName"/>
+        <result property="createTime" column="create_time"/>
+        <result property="modifiedTime" column="modified_time"/>
+        <result property="mark" column="mark"/>
+        <result property="examineStatus" column="examine_status"/>
+        <result property="creatorName" column="creatorName"/>
+        <result property="target" column="target"/>
+        <result property="theme" column="theme"/>
+        <result property="scale" column="scale"/>
+        <result property="industry" column="industry"/>
+        <result property="views" column="views"/>
+        <result property="mark" column="mark"/>
+        <result property="examineStatus" column="examine_status"/>
+        <result property="examineUser" column="'examine_user_id'"/>
+        <result property="examineDate" column="examine_date"/>
+        <result property="retreatCount" column="retreat_count"/>
+        <result property="retreatUser" column="retreat_user"/>
+        <result property="processorId" column="processor_id"/>
+        <result property="scrapyId" column="scrapy_id"/>
+        <result property="commitTime" column="commit_time"/>
+        <result property="region" column="region"/>
+        <result property="examineUserName" column="examineUserName"/>
+      <!--   <collection property="dispatchList" select="selectGeneralDispatch" column="id">
+        </collection>
+        <collection property="tagList" select="selectGeneralTag" column="id">
+        </collection> -->
+    </resultMap>
+    <resultMap id="govPolicyGeneralPageWxVOMap" type="com.cloud.dips.gov.api.vo.GeneralVO">
+        <result property="id" column="id"/>
+        <result property="title" column="title"/>
+        <result property="publishTime" column="publish_time"/>
+        <result property="style" column="style"/>
+        <result property="styleName" column="styleName"/>
+        <result property="level" column="level"/>
+        <result property="levelName" column="levelName"/>
+        <result property="timeliness" column="timeliness"/>
+        <result property="timelinessName" column="timelinessName"/>
+        <result property="stage" column="stage"/>
+        <result property="stageName" column="stageName"/>
+        <result property="formality" column="formality"/>
+        <result property="formalityName" column="formalityName"/>
+        <result property="creatorId" column="creator_id"/>
+        <result property="creatorName" column="creatorName"/>
+        <result property="createTime" column="create_time"/>
+        <result property="modifiedTime" column="modified_time"/>
+        <result property="mark" column="mark"/>
+        <result property="examineStatus" column="examine_status"/>
+        <result property="examineUser" column="'examine_user_id'"/>
+        <result property="examineDate" column="examine_date"/>
+        <result property="retreatCount" column="retreat_count"/>
+        <result property="retreatUser" column="retreat_user"/>
+        <result property="processorId" column="processor_id"/>
+        <result property="scrapyId" column="scrapy_id"/>
+        <result property="region" column="region"/>
+    </resultMap>
+
+    <sql id="commonSelect">
+		SELECT
+			polGen.id,
+			polGen.title,
+			polGen.summary,
+			polGen.source,
+			polGen.reference,
+			polGen.level,
+			d1.value AS levelName,
+			polGen.formality,
+			d2.value AS formalityName,
+			polGen.stage,
+			d3.value AS stageName,
+			polGen.issue,
+			polGen.timeliness,
+			d4.value AS timelinessName,
+			polGen.effective,
+			polGen.style,
+			d5.value AS styleName,
+			polGen.write_time,
+			polGen.publish_time,
+			polGen.effect_time,
+			polGen.invalid_time,
+			polGen.create_time,
+			polGen.attachment,
+			polGen.file,
+			polGen.url ,
+			polGen.views,
+			polGen.creator_id,
+			u.username AS creatorName,
+			polGen.target,
+			polGen.theme,
+			polGen.scale,
+			polGen.industry,
+			polGen.mark,
+			polGen.region,
+			polGen.region_arr,
+            polGen.retreat_content,
+            polGen.retreat_count
+		FROM gov_policy_general as polGen
+		LEFT JOIN gov_dict_value AS d1 ON d1.key = polGen.level AND d1.dict_id = (SELECT id FROM gov_dict WHERE number = 'POLICY_LEVEL')
+		LEFT JOIN gov_dict_value AS d2 ON d2.key = polGen.formality AND d2.dict_id = (SELECT id FROM gov_dict WHERE number = 'POLICY_SEND')
+		LEFT JOIN gov_dict_value AS d3 ON d3.key = polGen.stage AND d3.dict_id = (SELECT id FROM gov_dict WHERE number = 'POLICY_STAGE')
+		LEFT JOIN gov_dict_value AS d4 ON d4.key = polGen.timeliness AND d4.dict_id = (SELECT id FROM gov_dict WHERE number = 'IS_USEFUL')
+		LEFT JOIN gov_dict_value AS d5 ON d5.key = polGen.style AND d5.dict_id = (SELECT id FROM gov_dict WHERE number = 'POLICY_STYLE')
+		LEFT JOIN gov_user AS u ON u.id = polGen.creator_id
+	</sql>
+
+
+
+
+
+	<sql id="commonSelects">
+		SELECT
+			polGen.id,
+			polGen.title,
+			polGen.summary,
+			polGen.source,
+			polGen.reference,
+			polGen.formality,
+			polGen.stage,
+			polGen.issue,
+			polGen.timeliness,
+			polGen.effective,
+			polGen.level,
+			polGen.style,
+			polGen.write_time,
+			polGen.publish_time,
+			polGen.effect_time,
+			polGen.invalid_time,
+			polGen.create_time,
+			polGen.attachment,
+			polGen.file,
+			polGen.url ,
+			polGen.views,
+			polGen.creator_id,
+			polGen.target,
+			polGen.theme,
+			polGen.scale,
+			polGen.industry,
+			polGen.mark,
+			polGen.region,
+			polGen.region_arr,
+            polGen.retreat_content,
+            polGen.retreat_count
+		FROM gov_policy_general as polGen
+	</sql>
+    <sql id="selectPage">
+        SELECT
+        polGen.id,
+        polGen.title,
+        polGen.publish_time,
+        polGen.creator_id,
+        polGen.mark
+        FROM gov_policy_general AS polGen
+        WHERE polGen.is_deleted = '0'
+        AND polGen.examine_status=3
+        <if test="title != null and title != ''">
+            AND polGen.title LIKE CONCAT('%',#{title},'%')
+        </if>
+        <if test="style != null and style != ''">
+            AND polGen.style = #{style}
+        </if>
+        <if test="level != null and level != ''">
+            AND polGen.level = #{level}
+        </if>
+        <if test="stage != null and stage != ''">
+            AND polGen.stage = #{stage}
+        </if>
+        <if test="formality != null and formality != ''">
+            AND polGen.formality = #{formality}
+        </if>
+        <if test="startTime != null and startTime != ''">
+            AND polGen.publish_time &gt;= #{startTime}
+        </if>
+        <if test="endTime != null and endTime != ''">
+            AND polGen.publish_time &lt;= #{endTime}
+        </if>
+        <if test="username != null and username != ''">
+            AND u.username = #{username}
+        </if>
+        <if test="target != null and target != ''">
+            AND polGen.target LIKE CONCAT('%',#{target},'%')
+        </if>
+        <if test="theme != null and theme != ''">
+            AND polGen.theme LIKE CONCAT('%',#{theme},'%')
+        </if>
+        <if test="scale != null and scale != ''">
+            AND polGen.scale LIKE CONCAT('%',#{scale},'%')
+        </if>
+        <if test="industry != null and industry != ''">
+            AND polGen.industry LIKE CONCAT('%',#{industry},'%')
+        </if>
+        <if test="timeliness != null and timeliness != ''">
+            AND polGen.timeliness = #{timeliness}
+		</if>
+		<if test="regionArr != null and regionArr != '' and regionArr != '0'.toString()">
+			AND	polGen.region_arr LIKE CONCAT('%',#{regionArr})
+		</if>
+		ORDER BY 
+		polGen.publish_time DESC,
+		polGen.id DESC
+	</sql>
+  
+    <!-- 综合查询，完成查询的所有功能 -->
+    <select id="selectAllForConsole" resultMap="govPolicyGeneralPageVOMap">
+        SELECT
+        polGen.id,
+        polGen.title,
+        polGen.summary,
+        polGen.publish_time,
+        polGen.creator_id,
+        polGen.region,
+        polGen.region_arr,
+        polGen.scrapy_id,
+        polGen.create_time,
+        polGen.theme,
+        polGen.issue,
+        polGen.mark,
+        polGen.examine_date,
+        u.username AS creatorName,
+        (select us.username from gov_user us where us.id=polGen.examine_user_id) as examineUserName
+        FROM gov_policy_general AS polGen
+        LEFT JOIN gov_user AS u ON u.id = polGen.creator_id
+        WHERE polGen.is_deleted = '0'
+        AND polGen.examine_status=3
+        <if test="title != null and title != ''">
+            AND polGen.title LIKE CONCAT('%',#{title},'%')
+        </if>
+        <if test="style != null and style != ''">
+            AND polGen.style = #{style}
+        </if>
+        <if test="level != null and level != ''">
+            AND polGen.level = #{level}
+        </if>
+        <if test="stage != null and stage != ''">
+            AND polGen.stage = #{stage}
+        </if>
+        <if test="formality != null and formality != ''">
+            AND polGen.formality = #{formality}
+        </if>
+        <if test="startTime != null and startTime != ''">
+            AND polGen.publish_time &gt;= #{startTime}
+        </if>
+        <if test="endTime != null and endTime != ''">
+            AND polGen.publish_time &lt;= #{endTime}
+        </if>
+        <if test="username != null and username != ''">
+            AND u.username = #{username}
+        </if>
+        <if test="target != null and target != ''">
+            AND polGen.target LIKE CONCAT('%',#{target},'%')
+        </if>
+        <if test="theme != null and theme != ''">
+            AND polGen.theme LIKE CONCAT('%',#{theme},'%')
+        </if>
+        <if test="scale != null and scale != ''">
+            AND polGen.scale LIKE CONCAT('%',#{scale},'%')
+        </if>
+        <if test="industry != null and industry != ''">
+            AND polGen.industry LIKE CONCAT('%',#{industry},'%')
+        </if>
+        <if test="timeliness != null and timeliness != ''">
+            AND polGen.timeliness = #{timeliness}
+        </if>
+        <if test="regionArr != null and regionArr != '' and regionArr != '0'.toString()">
+            AND polGen.region_arr LIKE CONCAT('%',#{regionArr})
+        </if>
+        ORDER BY
+        <if test="views != null and views != '' ">
+            polGen.views DESC,
+        </if>
+        <if test="time!=null and time!=''">
+            polGen.publish_time DESC,
+        </if>
+        <if test="prop != null and prop != ''">
+            <if test="'publishTime' == prop">
+                <if test="order == 'descending'">
+                    polGen.publish_time DESC,
+                </if>
+                <if test="order == 'ascending'">
+                    polGen.publish_time ASC,
+                </if>
+            </if>
+            <if test="'examineDate' == prop">
+                <if test="order == 'descending'">
+                    polGen.examine_date DESC,
+                </if>
+                <if test="order == 'ascending'">
+                    polGen.examine_date ASC,
+                </if>
+            </if>
+        </if>
+        polGen.publish_time DESC
+    </select>
+
+    <select id="selectWxAll" resultMap="govPolicyGeneralPageWxVOMap">
+        <include refid="selectPage"/>
+    </select>
+
+    <!-- 综合查询，完成查询的所有功能 -->
+    <select id="selectAll" resultMap="govPolicyGeneralPageVOMap">
+        SELECT
+        polGen.id,
+        polGen.title,
+        polGen.summary,
+        polGen.publish_time,
+        polGen.creator_id,
+        polGen.mark,
+        polGen.examine_date
+        FROM gov_policy_general AS polGen
+        WHERE polGen.is_deleted = '0'
+        AND polGen.examine_status=3
+        <if test="title != null and title != ''">
+            AND MATCH (polGen.title) AGAINST (#{title} IN BOOLEAN MODE)
+        </if>
+        <if test="style != null and style != ''">
+            AND polGen.style = #{style}
+        </if>
+        <if test="level != null and level != ''">
+            AND polGen.level = #{level}
+        </if>
+        <if test="stage != null and stage != ''">
+            AND polGen.stage = #{stage}
+        </if>
+        <if test="formality != null and formality != ''">
+            AND polGen.formality = #{formality}
+        </if>
+        <if test="startTime != null and startTime != ''">
+            AND polGen.publish_time &gt;= #{startTime}
+        </if>
+        <if test="endTime != null and endTime != ''">
+            AND polGen.publish_time &lt;= #{endTime}
+        </if>
+        <if test="username != null and username != ''">
+            AND u.username = #{username}
+        </if>
+        <if test="target != null and target != ''">
+            AND polGen.target LIKE CONCAT('%',#{target},'%')
+        </if>
+        <if test="theme != null and theme != ''">
+            AND polGen.theme LIKE CONCAT('%',#{theme},'%')
+        </if>
+        <if test="scale != null and scale != ''">
+            AND polGen.scale LIKE CONCAT('%',#{scale},'%')
+        </if>
+        <if test="industry != null and industry != ''">
+            AND polGen.industry LIKE CONCAT('%',#{industry},'%')
+        </if>
+        <if test="timeliness != null and timeliness != ''">
+            AND polGen.timeliness = #{timeliness}
+        </if>
+        <if test="regionArr != null and regionArr != '' and regionArr != '0'.toString()">
+            AND polGen.region_arr LIKE CONCAT('%',#{regionArr})
+        </if>
+        ORDER BY
+        <if test="sort == 'views'">
+            polGen.views DESC,
+        </if>
+        <if test="sort == 'time'">
+			polGen.publish_time DESC,
+		</if>
+            polGen.id DESC
+    </select>
+
+    <!-- 查询个人政策 -->
+    <select id="selectSelfPage" resultMap="selfAndExaminePage">
+         SELECT
+            polGen.id,
+            polGen.source,
+            polGen.title,
+            polGen.publish_time,
+            polGen.create_time,
+            polGen.examine_status,
+            polGen.retreat_content,
+            polGen.retreat_count,
+            u.username AS creatorName
+        FROM gov_policy_general AS polGen
+        LEFT JOIN gov_user AS u ON u.id = polGen.creator_id
+        WHERE polGen.is_deleted = '0'
+        <if test="title != null and title != ''">
+            AND polGen.title LIKE CONCAT('%',#{title},'%')
+        </if>
+        <if test="processorId != null and processorId != ''">
+            AND polGen.processor_id = #{processorId}
+        </if>
+        <if test="examineStatus != null and examineStatus != ''">
+            AND polGen.examine_status = #{examineStatus}
+        </if>
+        <if test="style != null and style != ''">
+            AND polGen.style = #{style}
+        </if>
+        <if test="level != null and level != ''">
+            AND polGen.level = #{level}
+        </if>
+        <if test="stage != null and stage != ''">
+            AND polGen.stage = #{stage}
+        </if>
+        <if test="formality != null and formality != ''">
+            AND polGen.formality = #{formality}
+        </if>
+        <if test="startTime != null and startTime != ''">
+            AND polGen.publish_time &gt;= #{startTime}
+        </if>
+        <if test="endTime != null and endTime != ''">
+            AND polGen.publish_time &lt;= #{endTime}
+        </if>
+        <if test="target != null and target != ''">
+            AND polGen.target LIKE CONCAT('%',#{target},'%')
+        </if>
+        <if test="theme != null and theme != ''">
+            AND polGen.theme LIKE CONCAT('%',#{theme},'%')
+        </if>
+        <if test="scale != null and scale != ''">
+            AND polGen.scale LIKE CONCAT('%',#{scale},'%')
+        </if>
+        <if test="industry != null and industry != ''">
+            AND polGen.industry LIKE CONCAT('%',#{industry},'%')
+        </if>
+        <if test="timeliness != null and timeliness != ''">
+            AND polGen.timeliness = #{timeliness}
+        </if>
+        <if test="regionArr != null and regionArr != '' and regionArr != '0'.toString()">
+            AND polGen.region_arr LIKE CONCAT('%',#{regionArr})
+        </if>
+        ORDER BY 
+        <if test="prop != null and prop != ''">
+            <if test="'publishTime' == prop">
+                <if test="order == 'descending'">
+                    polGen.publish_time DESC,
+                </if>
+                <if test="order == 'ascending'">
+                    polGen.publish_time ASC,
+                </if>
+            </if>
+            <if test="'examineDate' == prop">
+                <if test="order == 'descending'">
+                    polGen.examine_date DESC,
+                </if>
+                <if test="order == 'ascending'">
+                    polGen.examine_date ASC,
+                </if>
+            </if>
+            <if test="'createTime' == prop">
+                <if test="order == 'descending'">
+                    polGen.create_time DESC,
+                </if>
+                <if test="order == 'ascending'">
+                    polGen.create_time ASC,
+                </if>
+            </if>
+        </if>
+		polGen.examine_status=6 desc,polGen.create_time DESC
+    </select>
+
+    <select id="updateForGiveUpProcess">
+	   UPDATE scrapy_gov_policy_general 
+        SET is_deleted = "0" 
+        WHERE
+            processor_id = #{processorId}
+            AND id = #{scrapyId}
+	</select>
+
+
+    <select id="viewUp">
+	   UPDATE gov_policy_general set views=views+1  WHERE id = #{id}
+	</select>
+
+    <!-- 查询审核政策 -->
+    <select id="selectExaminePage" resultMap="selfAndExaminePage">
+       SELECT
+            polGen.id,
+            polGen.source,
+            polGen.title,
+            polGen.publish_time,
+            polGen.create_time,
+            polGen.examine_status,
+            polGen.retreat_content,
+            polGen.retreat_count,
+            polGen.commit_time,
+            u.username AS creatorName,
+        (select us.username from gov_user us where us.id=polGen.examine_user_id) as examineUserName
+        FROM gov_policy_general AS polGen
+        LEFT JOIN gov_user AS u ON u.id = polGen.processor_id
+        WHERE polGen.is_deleted = '0'
+        AND polGen.examine_status in (1,2)
+        <if test="title != null and title != ''">
+            AND polGen.title LIKE CONCAT('%',#{title},'%')
+        </if>
+        <if test="processorName != null and processorName != ''">
+            AND u.username = #{processorName}
+        </if>
+        <if test="examineStatus != null and examineStatus != ''">
+            AND polGen.examine_status = #{examineStatus}
+        </if>
+        <if test="style != null and style != ''">
+            AND polGen.style = #{style}
+        </if>
+        <if test="level != null and level != ''">
+            AND polGen.level = #{level}
+        </if>
+        <if test="stage != null and stage != ''">
+            AND polGen.stage = #{stage}
+        </if>
+        <if test="formality != null and formality != ''">
+            AND polGen.formality = #{formality}
+        </if>
+        <if test="startTime != null and startTime != ''">
+            AND polGen.publish_time &gt;= #{startTime}
+        </if>
+        <if test="endTime != null and endTime != ''">
+            AND polGen.publish_time &lt;= #{endTime}
+        </if>
+        <if test="target != null and target != ''">
+            AND polGen.target LIKE CONCAT('%',#{target},'%')
+        </if>
+        <if test="theme != null and theme != ''">
+            AND polGen.theme LIKE CONCAT('%',#{theme},'%')
+        </if>
+        <if test="scale != null and scale != ''">
+            AND polGen.scale LIKE CONCAT('%',#{scale},'%')
+        </if>
+        <if test="industry != null and industry != ''">
+            AND polGen.industry LIKE CONCAT('%',#{industry},'%')
+        </if>
+        <if test="timeliness != null and timeliness != ''">
+            AND polGen.timeliness = #{timeliness}
+        </if>
+        <if test="regionArr != null and regionArr != '' and regionArr != '0'.toString()">
+            AND polGen.region_arr LIKE CONCAT('%',#{regionArr})
+        </if>
+        ORDER BY
+        <if test="prop != null and prop != ''">
+            <if test="'publishTime' == prop">
+                <if test="order == 'descending'">
+                    polGen.publish_time DESC,
+                </if>
+                <if test="order == 'ascending'">
+                    polGen.publish_time ASC,
+                </if>
+            </if>
+            <if test="'examineDate' == prop">
+                <if test="order == 'descending'">
+                    polGen.examine_date DESC,
+                </if>
+                <if test="order == 'ascending'">
+                    polGen.examine_date ASC,
+                </if>
+            </if>
+            <if test="'commitTime' == prop">
+                <if test="order == 'descending'">
+                    polGen.commit_time DESC,
+                </if>
+                <if test="order == 'ascending'">
+                    polGen.commit_time ASC,
+                </if>
+            </if>
+        </if>
+        polGen.commit_time DESC, polGen.publish_time DESC
+    </select>
+
+
+    <!-- 综合查询，完成查询的所有功能 -->
+    <select id="selectRecyclePage" resultMap="govPolicyGeneralPageVOMap">
+        SELECT
+        polGen.id,
+        polGen.title,
+        polGen.summary,
+        polGen.publish_time,
+        polGen.region,
+        polGen.region_arr,
+        polGen.mark,
+        u.username AS creatorName
+        FROM gov_policy_general AS polGen
+        LEFT JOIN gov_user AS u ON u.id = polGen.creator_id
+        WHERE polGen.is_deleted = '1'
+        AND polGen.examine_status=3
+        <if test="null != title and title != ''">
+            AND polGen.title LIKE CONCAT('%',#{title},'%')
+        </if>
+        <if test="username != null and username != ''">
+            AND u.username = #{username}
+        </if>
+        ORDER BY polGen.id DESC
+    </select>
+
+    <select id="selectGeneralVO" resultMap="govPolicyGeneralVOMap">
+        <include refid="commonSelects"/>
+        WHERE polGen.id = #{id}
+        AND polGen.is_deleted = '0'
+        AND polGen.examine_status=3
+    </select>
+    
+    <select id="selectGeneralVOForConsole" resultMap="generalVOForConsole">
+        <include refid="commonSelect"/>
+        WHERE polGen.id = #{id}
+        AND polGen.is_deleted = '0'
+    </select>
+
+    <select id="selectGeneralDispatch" resultMap="commonVOMap">
+		 SELECT
+			o.id,
+			o.name
+		FROM
+			gov_relation AS gr
+		LEFT JOIN gov_policy_organization AS o ON gr.correlation_id = o.id
+		LEFT JOIN gov_relation_type AS rt ON rt.number = 'gov_general_dispatch'
+		WHERE gr.node = 'gov_general_policy' AND gr.relation_id = #{id} AND gr.type_id = rt.id AND o.is_deleted = '0'
+	</select>
+    <select id="selectGeneralUnion" resultMap="commonVOMap">
+		SELECT
+			o.id,
+			o.name
+		FROM
+			gov_relation AS gr
+		LEFT JOIN gov_policy_organization AS o ON gr.correlation_id = o.id
+		LEFT JOIN gov_relation_type AS rt ON rt.number = 'gov_general_union'
+		WHERE gr.node = 'gov_general_policy' AND gr.relation_id = #{id} AND gr.type_id = rt.id AND o.is_deleted = '0'
+	</select>
+
+    <select id="selectGeneralPolicy" resultMap="commonVOMap">
+		SELECT
+			pg.id,
+			pg.title AS name
+		FROM
+			gov_relation AS gr
+		LEFT JOIN gov_policy_general AS pg ON gr.correlation_id = pg.id
+		LEFT JOIN gov_relation_type AS rt ON rt.number = 'gov_general_policy'
+		WHERE gr.node = 'gov_general_policy' AND gr.relation_id = #{id} AND gr.type_id = rt.id AND pg.is_deleted = '0'
+	</select>
+
+    <select id="selectGeneralRegion" resultMap="commonVOMap">
+		SELECT
+			city.id,
+			city.name
+		FROM
+			gov_relation AS gr
+		LEFT JOIN gov_city AS city ON correlation_id = city.id
+		LEFT JOIN gov_relation_type AS rt ON rt.number = 'gov_general_city'
+		WHERE gr.node = 'gov_general_policy' AND gr.relation_id = #{id} AND gr.type_id = rt.id AND city.is_deleted = '0'
+	</select>
+
+    <select id="selectRegionArr" resultType="String">
+		SELECT
+			a.region_arr
+		FROM
+			gov_policy_general AS a
+		WHERE a.id = #{id}
+	</select>
+
+    <select id="selectGeneralTag" resultMap="commonVOMap">
+		SELECT
+            gt.id,
+            gt.name
+		FROM
+			gov_tag_relation AS gtr
+		LEFT JOIN gov_tag_relation_type AS rt ON rt.type_number = 'def'
+		LEFT JOIN gov_tag AS gt ON gt.id = gtr.tag_id
+		WHERE gtr.node = 'gov_general_policy' AND gtr.relation_id = #{id} AND gtr.type_id = rt.id
+		GROUP BY
+			gt.id
+	</select>
+	
+	<select id="checkTag" resultType="java.lang.Integer">
+        SELECT
+            count(*)
+        FROM
+            gov_tag_relation AS gtr
+        LEFT JOIN gov_tag_relation_type AS rt ON rt.type_number = 'def'
+        LEFT JOIN gov_tag AS gt ON gt.id = gtr.tag_id
+        WHERE gtr.node = 'gov_general_policy' AND gtr.relation_id = #{id} AND gtr.type_id = rt.id
+    </select>
+    
+	<select id="checkDispatch" resultType="java.lang.Integer">
+        SELECT
+            count(*)
+        FROM
+            gov_relation AS gr
+        LEFT JOIN gov_policy_organization AS o ON gr.correlation_id = o.id
+        LEFT JOIN gov_relation_type AS rt ON rt.number = 'gov_general_dispatch'
+        WHERE gr.node = 'gov_general_policy' AND gr.relation_id = #{id} AND gr.type_id = rt.id AND o.is_deleted = '0'
+    </select>
+	
+
+    <resultMap id="commonVOMap" type="com.cloud.dips.gov.api.vo.CommonVO">
+        <id column="id" property="commonId"/>
+        <result column="name" property="commonName"/>
+        <result property="dispatchId" column="dispatchId"/>
+        <result property="dispatchName" column="dispatchName"/>
+        <result property="relationId" column="relationId"/>
+        <result property="tagName" column="tagName"/>
+        <result property="tagId" column="tagId"/>
+    </resultMap>
+
+    <update id="updateByGeneralId" parameterType="java.lang.Integer">
+		UPDATE gov_policy_general SET is_deleted = '1' WHERE id = #{id}
+	</update>
+
+    <select id="selectGeneralNext" resultMap="commonVOMap">
+		SELECT
+	  		id,
+	  		title AS name
+	  	FROM
+	  		gov_policy_general
+	  	WHERE
+	  	ID = (
+		SELECT
+			(
+				CASE
+				WHEN (
+						SELECT A.G1+A.G2 FROM (SELECT
+						(
+							CASE
+							WHEN MIN(polGen.id) = #{nextId} THEN
+								0
+							ELSE
+								1
+							END
+						) G1,
+						(
+							CASE
+							WHEN COUNT(1) &gt; 1 THEN
+								1
+							ELSE
+								0
+							END
+						) G2
+					FROM
+						gov_policy_general AS polGen
+					WHERE
+						polGen.is_deleted = '0'
+					AND polGen.examine_status = 3
+					AND DATE_FORMAT(polGen.publish_time,'%Y-%m-%d %H:%i') = DATE_FORMAT(#{nextTime},'%Y-%m-%d %H:%i')
+					ORDER BY
+						polGen.publish_time DESC,
+						polGen.id DESC) A
+				) > 1 THEN
+					(
+						SELECT
+							polGen.id
+						FROM
+							gov_policy_general AS polGen
+						WHERE
+							polGen.is_deleted = '0'
+						AND polGen.examine_status = 3
+						AND polGen.ID &lt; #{nextId}
+						AND DATE_FORMAT(polGen.publish_time,'%Y-%m-%d %H:%i') &lt;= DATE_FORMAT(#{nextTime},'%Y-%m-%d %H:%i')
+						ORDER BY
+							polGen.publish_time DESC,
+							polGen.id DESC
+						LIMIT 0,
+						1
+					)
+				ELSE
+					(
+						SELECT
+							polGen.id
+						FROM
+							gov_policy_general AS polGen
+						WHERE
+							polGen.is_deleted = '0'
+						AND polGen.examine_status = 3
+						AND polGen.ID <![CDATA[ <> ]]> #{nextId}
+						AND DATE_FORMAT(polGen.publish_time,'%Y-%m-%d %H:%i') &lt;DATE_FORMAT(#{nextTime},'%Y-%m-%d %H:%i')
+						ORDER BY
+							polGen.publish_time DESC,
+							polGen.id DESC
+						LIMIT 0,
+						1
+					)
+				END
+			) AS GID
+		FROM
+			DUAL
+	)
+	</select>
+
+    <select id="selectGeneralPrev" resultMap="commonVOMap">
+		SELECT
+		id,
+		title AS name 
+FROM
+	gov_policy_general
+WHERE
+	ID = (
+		SELECT
+			(
+				CASE
+				WHEN (
+						SELECT A.G1+A.G2 FROM (SELECT
+						(
+							CASE
+							WHEN max(polGen.id) = #{prevId} THEN
+								0
+							ELSE
+								1
+							END
+						) G1,
+						(
+							CASE
+							WHEN COUNT(1) &gt; 1 THEN
+								1
+							ELSE
+								0
+							END
+						) G2
+					FROM
+						gov_policy_general AS polGen
+					WHERE
+						polGen.is_deleted = '0'
+					AND polGen.examine_status = 3
+					AND unix_timestamp(polGen.publish_time) = unix_timestamp(#{prevTime})
+					ORDER BY
+						polGen.publish_time,
+						polGen.id) A
+				) &gt; 1 THEN
+					(
+						SELECT
+							polGen.id
+						FROM
+							gov_policy_general AS polGen
+						WHERE
+							polGen.is_deleted = '0'
+						AND polGen.examine_status = 3
+						AND polGen.ID &gt; #{prevId}
+						AND unix_timestamp(polGen.publish_time) &gt;= unix_timestamp(#{prevTime})
+						ORDER BY
+							polGen.publish_time,
+							polGen.id
+						LIMIT 0,
+						1
+					)
+				ELSE
+					(
+						SELECT
+							polGen.id
+						FROM
+							gov_policy_general AS polGen
+						WHERE
+							polGen.is_deleted = '0'
+						AND polGen.examine_status = 3
+						AND polGen.ID <![CDATA[ <> ]]> #{prevId}
+						AND unix_timestamp(polGen.publish_time) &gt;unix_timestamp(#{prevTime})
+						ORDER BY
+							polGen.publish_time,
+							polGen.id
+						LIMIT 0,
+						1
+					)
+				END
+			) AS GID
+		FROM
+			DUAL
+	)
+	</select>
+
+    <select id="selectGeneralVoPageByTagId" resultType="com.cloud.dips.gov.api.vo.GeneralVO">
+		SELECT
+			gen.id,
+	  		gen.title
+		FROM
+			gov_tag_relation AS gtr
+		LEFT JOIN gov_tag_relation_type AS rt ON rt.type_number = 'def' AND gtr.type_id = rt.id
+		LEFT JOIN gov_tag AS gt ON gt.id = gtr.tag_id
+		LEFT JOIN gov_policy_general AS gen ON gtr.relation_id = gen.id
+		WHERE gtr.node = 'gov_general_policy' AND gt.id = #{tagId} AND gen.is_deleted = '0' AND gen.examine_status='3'
+	</select>
+
+    <select id="repeat" resultType="com.cloud.dips.gov.api.entity.GovPolicyGeneral">
+		SELECT
+			id,
+			title
+		FROM
+			gov_policy_general
+		WHERE
+			is_deleted = '0' AND title = #{title}
+	</select>
+    <delete id="deleteRelation" parameterType="java.util.Map">
+		delete from gov_relation where node= #{node} and relation_id = #{relationId}
+	</delete>
+    <!-- 全局模糊搜索 -->
+    <select id="selectVagueGeneral" resultMap="govPolicyGeneralPageVOMap">
+        SELECT
+        polGen.id,
+        polGen.title,
+        polGen.summary,
+        polGen.publish_time,
+        polGen.creator_id,
+        u.username AS creatorName
+        FROM gov_policy_general AS polGen
+        LEFT JOIN gov_user AS u ON u.id = polGen.creator_id
+        WHERE polGen.is_deleted = '0'
+        AND
+        polGen.title LIKE CONCAT('%',#{title},'%')
+        ORDER BY
+        <if test="views != null and views != '' ">
+            polGen.views DESC,
+        </if>
+        <if test="time!=null and time!=''">
+            polGen.publish_time DESC,
+        </if>
+        polGen.id DESC
+        LIMIT
+        #{page},#{size}
+    </select>
+    <!-- 全局模糊搜索条数 -->
+    <select id="selectVagueCount" resultType="Integer">
+		SELECT
+			count(id)
+		FROM gov_policy_general polGen
+		WHERE 
+		polGen.is_deleted = "0"
+		AND
+			polGen.title LIKE CONCAT('%',#{title},'%')
+		</select>
+    <!-- 引用的申报数量 -->
+    <select id="selectCountGeneral" resultType="Integer">
+		SELECT
+			COUNT(id)
+		FROM
+			gov_policy_general polGen
+		WHERE
+			polGen.is_deleted = 0
+		AND	find_in_set(#{theme}, polGen.theme)
+		</select>
+    <!-- 通用政策比对 -->
+    <resultMap id="comparisonResultMap" type="com.cloud.dips.gov.api.vo.ComparisonGeneralVO">
+        <id property="id" column="id"/>
+        <result property="title" column="title"/>
+        <result property="url" column="url"/>
+        <result property="publishTime" column="publish_time"/>
+        <result property="effectTime" column="effect_time"/>
+        <result property="invalidTime" column="invalid_time"/>
+        <result property="reference" column="reference"/>
+        <result property="source" column="source"/>
+        <result property="issue" column="issue"/>
+        <result property="mark" column="mark"/>
+        <result property="summary" column="summary"/>
+        <collection property="dispatchList" select="selectGeneralDispatch" column="id">
+        </collection>
+        <collection property="regionList" select="selectRegionList" column="id">
+        </collection>
+        <collection property="levelList" select="selectLevelList" column="levelKey=level">
+        </collection>
+        <collection property="targetList" select="selectTargetList" column="targetKey=target">
+        </collection>
+        <collection property="industryList" select="selectIndustryList" column="industryKey=industry">
+        </collection>
+        <collection property="scaleList" select="selectScaleList" column="scaleKey=scale">
+        </collection>
+    </resultMap>
+
+    <resultMap id="comparisonListVOMap" type="com.cloud.dips.gov.api.vo.ComparisonListVO">
+        <result column="key" property="comparisonKey"/>
+        <result column="value" property="comparisonName"/>
+    </resultMap>
+    <select id="selectComparisonByGeneral" resultMap="comparisonResultMap">
+        SELECT
+        id,title,url,publish_time,effect_time,invalid_time,reference,source,
+        issue,mark,`level`,style,`target`,industry,scale,summary
+        FROM
+        gov_policy_general
+        WHERE
+        id IN
+        <foreach collection="ids" index="index" item="item"
+                 separator="," open="(" close=")">
+            #{item}
+        </foreach>
+    </select>
+    <select id="selectLevelList" resultMap="comparisonListVOMap">
+		SELECT
+			`key`,
+			`value`
+		FROM
+			gov_dict_value
+		WHERE
+			dict_id = 6
+		AND
+			`key` = #{levelKey}
+	</select>
+    <select id="selectStyleList" resultMap="comparisonListVOMap">
+		SELECT
+			`key`,
+			`value`
+		FROM
+			gov_dict_value
+		WHERE
+			dict_id = 5
+		AND
+			`key` = #{styleKey}
+	</select>
+    <select id="selectStageList" resultMap="comparisonListVOMap">
+		SELECT
+			`key`,
+			`value`
+		FROM
+			gov_dict_value
+		WHERE
+			dict_id = 20
+		AND
+			`key` = #{stageKey}
+	</select>
+    <select id="selectFormalityList" resultMap="comparisonListVOMap">
+		SELECT
+			`key`,
+			`value`
+		FROM
+			gov_dict_value
+		WHERE
+			dict_id = 21
+		AND
+			`key` = #{formalityKey}
+	</select>
+    <select id="selectTargetList" resultMap="comparisonListVOMap">
+        SELECT
+        `key`,
+        `value`
+        FROM
+        gov_dict_value
+        WHERE
+        dict_id = 7
+        AND
+        `key` IN
+        <foreach collection="targetKey.split(',')" index="index" item="item"
+                 separator="," open="(" close=")">
+            #{item}
+        </foreach>
+    </select>
+    <select id="selectIndustryList" resultMap="comparisonListVOMap">
+        SELECT
+        `key`,
+        `value`
+        FROM
+        gov_dict_value
+        WHERE
+        dict_id = 17
+        AND
+        `key` IN
+        <foreach collection="industryKey.split(',')" index="index" item="item"
+                 separator="," open="(" close=")">
+            #{item}
+        </foreach>
+    </select>
+    <select id="selectScaleList" resultMap="comparisonListVOMap">
+        SELECT
+        `key`,
+        `value`
+        FROM
+        gov_dict_value
+        WHERE
+        dict_id = 16
+        AND
+        `key` IN
+        <foreach collection="scaleKey.split(',')" index="index" item="item"
+                 separator="," open="(" close=")">
+            #{item}
+        </foreach>
+    </select>
+    <select id="selectRegionList" resultMap="comparisonListVOMap">
+		SELECT
+			region AS `value`,
+			region_arr AS `key`
+		FROM
+			gov_policy_general
+		WHERE
+			id =  #{id}
+	</select>
+    <select id="getGeneralAndDeclareList" resultType="map">
+        SELECT
+        id,
+        title,
+        '通用政策' as type
+        FROM
+        gov_policy_general AS g
+        WHERE
+        g.is_deleted = 0
+        AND g.examine_status = 3
+        <if test="title != null and title != '' ">
+            AND title LIKE CONCAT('%',#{title},'%')
+        </if>
+        UNION
+        SELECT
+        id,
+        title,
+        '申报政策' as type
+        FROM
+        gov_policy_declare AS d
+        WHERE
+        d.is_deleted = 0
+        AND d.examine_status = 3
+        <if test="title != null and title != '' ">
+            AND title LIKE CONCAT('%',#{title},'%')
+        </if>
+    </select>
+
+    <resultMap id="govPolicyGeneralVOxgMap" type="com.cloud.dips.gov.api.vo.GeneralVO">
+        <result property="id" column="id"/>
+        <result property="title" column="title"/>
+        <result property="publishTime" column="publish_time"/>
+        <result property="relatedTags" column="gg"/>
+        <result property="mark" column="mark"/>
+    </resultMap>
+
+    <!--根据政策依据查询数据-->
+    <select id="selctRelation" resultMap="govPolicyGeneralVOxgMap">
+        SELECT
+        distinct
+        pg.id,
+        pg.title,
+        pg.mark
+        FROM
+        gov_relation AS gr
+        LEFT JOIN gov_policy_general AS pg ON gr.relation_id = pg.id
+        LEFT JOIN gov_relation_type AS rt ON rt.number = 'gov_general_policy'
+        WHERE gr.node = 'gov_general_policy' AND
+        gr.type_id = rt.id AND pg.is_deleted = '0'
+        and pg.examine_status=3
+        and pg.id not in (#{id})
+        and correlation_id in
+        <foreach collection="policyList" item="item" open="(" close=")" separator=",">
+            #{item}
+        </foreach>
+        ORDER BY pg.publish_time desc LIMIT 0,5
+    </select>
+
+    <!--根据标签查找匹配度-->
+    <select id="selectRelevant" resultMap="govPolicyGeneralVOxgMap">
+        select
+        *
+        from
+
+
+        (select * from govgeneralpolicy where id  not  in (#{id}) )
+
+        sd
+        where
+
+        <foreach collection="tags" item="tag" index="index">
+            <if test="index==0">
+                FIND_IN_SET(#{tag}, sd.gg )
+            </if>
+            <if test="index>=1">
+                or FIND_IN_SET(#{tag}, sd.gg )
+
+            </if>
+        </foreach>
+        ORDER BY sd.publish_time DESC
+
+
+    </select>
+
+
+    <!--查询各类政策条数-->
+    <select id="selectAllPolicyCount" resultType="map">
+        SELECT
+            count( id ) 
+        FROM
+            gov_policy_general 
+        WHERE
+            is_deleted = '0' 
+            AND examine_status = 3 
+            
+        UNION
+        
+        SELECT
+            count( id ) 
+        FROM
+            gov_policy_explain 
+        WHERE
+            is_deleted = '0' 
+            AND examine_status = 3 
+            
+        UNION
+        
+        SELECT
+            count( id ) 
+        FROM
+            gov_policy_declare 
+        WHERE
+            is_deleted = '0' 
+            AND examine_status = 3 
+            
+        UNION
+        
+        SELECT
+            count( id ) 
+        FROM
+            gov_policy_information 
+        WHERE
+            is_deleted = '0' 
+            AND examine_status = 3
+    </select>
+
+	<!-- 重构查询正文 -->
+	<select id="selectGeneralText" resultType="String">
+		SELECT text FROM gov_policy_general  WHERE id = #{id}
+	</select>
+	<!-- 重构查询发文部门 -->
+    <select id="selectNewGeneralDispatch" resultMap="commonVOMap">
+		SELECT
+		gr.relation_id as dispatchId,
+			o.name as dispatchName
+		FROM
+			gov_relation AS gr
+		LEFT JOIN gov_policy_organization AS o ON gr.correlation_id = o.id
+		LEFT JOIN gov_relation_type AS rt ON rt.number = 'gov_general_dispatch'
+		WHERE gr.node = 'gov_general_policy' AND gr.relation_id in
+		<foreach collection="dispatchId" index="index" item="item"
+				separator="," open="(" close=")">
+			#{item}
+		</foreach>
+		AND gr.type_id = rt.id AND o.is_deleted = '0'
+	</select>
+     <!-- 重构查询标签 -->
+    <select id="selectNewGeneralTag" resultMap="commonVOMap">
+		SELECT
+			gtr.relation_id as relationId,
+            gt.name as tagName,
+            gt.id as tagId
+		FROM
+			gov_tag_relation AS gtr
+		LEFT JOIN gov_tag_relation_type AS rt ON rt.type_number = 'def'
+		LEFT JOIN gov_tag AS gt ON gt.id = gtr.tag_id
+		WHERE gtr.node = 'gov_general_policy' AND gtr.relation_id in 
+		<foreach collection="tagApiId" index="index" item="item"
+				separator="," open="(" close=")">
+			#{item}
+		</foreach>
+		AND gtr.type_id = rt.id
+		GROUP BY
+			gt.id
+	</select>
+
+	<!-- 综合查询,查询政策的id  TODO AND polGen.examine_status=3-->
+	<select id="gainList" resultType="java.lang.Long">
+		SELECT
+		polGen.id
+		FROM gov_policy_general AS polGen
+		WHERE polGen.is_deleted = '0'
+		<if test="title != null and title != ''">
+			AND MATCH (polGen.title) AGAINST (#{title} IN BOOLEAN MODE)
+		</if>
+		<if test="style != null and style != ''">
+			AND polGen.style = #{style}
+		</if>
+		<if test="level != null and level != ''">
+			AND polGen.level = #{level}
+		</if>
+		<if test="stage != null and stage != ''">
+			AND polGen.stage = #{stage}
+		</if>
+		<if test="formality != null and formality != ''">
+			AND polGen.formality = #{formality}
+		</if>
+		<if test="startTime != null and startTime != ''">
+			AND polGen.publish_time &gt;= #{startTime}
+		</if>
+		<if test="endTime != null and endTime != ''">
+			AND polGen.publish_time &lt;= #{endTime}
+		</if>
+		<if test="username != null and username != ''">
+			AND u.username = #{username}
+		</if>
+		<if test="target != null and target != ''">
+			AND polGen.target LIKE CONCAT('%',#{target},'%')
+		</if>
+		<if test="theme != null and theme != ''">
+			AND polGen.theme LIKE CONCAT('%',#{theme},'%')
+		</if>
+		<if test="scale != null and scale != ''">
+			AND polGen.scale LIKE CONCAT('%',#{scale},'%')
+		</if>
+		<if test="industry != null and industry != ''">
+			AND polGen.industry LIKE CONCAT('%',#{industry},'%')
+		</if>
+		<if test="timeliness != null and timeliness != ''">
+			AND polGen.timeliness = #{timeliness}
+		</if>
+		<if test="regionArr != null and regionArr != '' and regionArr != '0'.toString()">
+			AND polGen.region_arr LIKE CONCAT('%',#{regionArr})
+		</if>
+		ORDER BY
+		<if test="views != null and views != '' ">
+			polGen.views DESC,
+		</if>
+		<if test="time!=null and time!=''">
+			polGen.publish_time DESC,
+		</if>
+		polGen.id DESC
+	</select>
+
+	<select id="queryByInfos" resultType="com.cloud.dips.gov.api.entity.GovPolicyGeneral">
+		SELECT id,title,text,url
+		FROM gov_policy_general
+		WHERE id IN
+		<foreach collection="ids" item="id" open="(" separator="," close=")">
+			#{id}
+		</foreach>
+	</select>
+</mapper>
+
+
+

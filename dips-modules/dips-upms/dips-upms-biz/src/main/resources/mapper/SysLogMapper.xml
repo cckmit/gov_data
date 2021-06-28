@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  ~
+  ~      Copyright (c) 2018-2025, RCG All rights reserved.
+  ~
+  -->
+
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.cloud.dips.admin.mapper.SysLogMapper">
+
+	<!-- 通用查询映射结果 -->
+	<resultMap id="BaseResultMap" type="com.cloud.dips.admin.api.entity.SysLog">
+		<id column="id" property="id"/>
+		<result column="type" property="type"/>
+		<result column="title" property="title"/>
+		<result column="service_id" property="serviceId"/>
+		<result column="create_by" property="createBy"/>
+		<result column="create_time" property="createTime"/>
+		<result column="modified_time" property="modifiedTime"/>
+		<result column="remote_addr" property="remoteAddr"/>
+		<result column="user_agent" property="userAgent"/>
+		<result column="request_uri" property="requestUri"/>
+		<result column="method" property="method"/>
+		<result column="params" property="params"/>
+		<result column="time" property="time"/>
+		<result column="is_deleted" property="isDeleted"/>
+		<result column="role" property="role"/>
+		<result column="exception" property="exception"/>
+	</resultMap>
+
+	<!-- 通用查询结果列 -->
+	<sql id="Base_Column_List">
+        id, type, title, create_by AS createBy, create_time AS createTime, modified_time AS modifiedTime, remote_addr AS remoteAddr, user_agent AS userAgent, request_uri AS requestUri, method, params, `time`, is_deleted AS isDeleted,role AS role
+    </sql>
+	<select id="findByList" resultMap="BaseResultMap">
+
+		select <include refid="Base_Column_List"/> from  gov_log where role=1 and is_deleted=0
+
+	</select>
+
+</mapper>

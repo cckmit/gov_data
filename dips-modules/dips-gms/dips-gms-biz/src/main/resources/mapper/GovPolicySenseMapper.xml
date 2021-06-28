@@ -1,0 +1,212 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.cloud.dips.gov.mapper.GovPolicySenseMapper">
+
+    <!-- 标签 -->
+	<resultMap id="govTagSense" type="com.cloud.dips.gov.api.vo.CommonVO">
+	    <result property="commonId" column="id" />
+		<result property="commonName" column="name" />
+	</resultMap>
+
+	<!-- VO集 -->
+    <resultMap type="com.cloud.dips.gov.api.vo.SenseVO" id="govPolicySenseVOMap">
+        <result property="id" column="id"/>
+        <result property="title" column="title"/>
+        <result property="keywords" column="keywords"/>
+        <result property="introduce" column="introduce"/>
+        <result property="publishTime" column="publish_time"/>
+        <result property="source" column="source"/>
+        <result property="summary" column="summary"/>
+        <result property="text" column="text"/>
+		<result property="creatorName" column="creatorName"/>
+        <result property="createTime" column="create_time"/>
+		<result property="mark" column="mark"/>
+        <result property="examineStatus" column="examine_status"/>
+        <result property="examineUser" column="'examine_user_id'"/>
+        <result property="examineDate" column="examine_date"/>
+        <result property="retreatCount" column="retreat_count"/>
+        <result property="retreatUser" column="retreat_user"/>
+        <result property="processorId" column="processor_id"/>
+        <result property="scrapyId" column="scrapy_id"/>
+        <association property="next" select="selectSenseNext" column="id">
+		</association>
+		<association property="prev" select="selectSensePrev" column="id">
+		</association>
+        <collection property="tagList" select="selectTagDesc" column="id">
+		</collection>
+    </resultMap>
+
+    <select id="selectPolicySenseList" resultMap="govPolicySenseVOMap">
+      SELECT
+           p.*,
+           u.username AS creatorName
+      FROM
+           gov_policy_sense p
+	  LEFT JOIN gov_user AS u ON u.id = p.creator_id
+      WHERE
+      		p.is_deleted = '0'
+        <if test="title != null and title != ''">
+			AND p.title LIKE CONCAT('%',#{title},'%')
+		</if>
+		<if test="username != null and username != ''">
+			AND u.username = #{username}
+		</if>
+		    ORDER BY p.id DESC
+    </select>
+    
+    <select id="selectPolicySenseListForConsole" resultMap="govPolicySenseVOMap">
+      SELECT
+           p.*,
+           u.username AS creatorName
+      FROM
+           gov_policy_sense p
+      LEFT JOIN gov_user AS u ON u.id = p.creator_id
+      WHERE
+            p.is_deleted = '0'
+        <if test="title != null and title != ''">
+            AND p.title LIKE CONCAT('%',#{title},'%')
+        </if>
+        <if test="username != null and username != ''">
+            AND u.username = #{username}
+        </if>
+        ORDER BY 
+        <if test="prop != null and prop != ''">
+            <if test="'publishTime' == prop">
+                <if test="order == 'descending'">
+                    p.publish_time DESC,
+                </if>
+                <if test="order == 'ascending'">
+                    p.publish_time ASC,
+                </if>
+            </if>
+        </if>
+        p.id DESC
+    </select>
+    
+     <select id="selectSelfPage" resultMap="govPolicySenseVOMap">
+      SELECT
+           p.*,
+           u.username AS creatorName
+      FROM
+           gov_policy_sense p
+      LEFT JOIN gov_user AS u ON u.id = p.creator_id
+      WHERE
+            p.is_deleted = '0'
+      <if test="title != null and title != ''">
+            AND d.title LIKE CONCAT('%',#{title},'%')
+      </if>
+      <if test="processorId != null and processorId != ''">
+            AND polGen.processor_id = #{processorId}
+        </if>
+     <if test="examineStatus != null and examineStatus != ''">
+            AND examine_status = #{examineStatus}
+        </if>
+            ORDER BY p.id DESC
+    </select>
+
+
+     <select id="selectExaminePage" resultMap="govPolicySenseVOMap">
+      SELECT
+           p.*,
+           u.username AS creatorName
+      FROM
+           gov_policy_sense p
+      LEFT JOIN gov_user AS u ON u.id = p.creator_id
+      WHERE
+            p.is_deleted = '0'
+      <if test="title != null and title != ''">
+            AND d.title LIKE CONCAT('%',#{title},'%')
+      </if>
+       <if test="processorName != null and processorName != ''">
+            AND u.username = #{processorName}
+        </if>
+     <if test="examineStatus != null and examineStatus != ''">
+            AND examine_status = #{examineStatus}
+        </if>
+            ORDER BY p.id DESC
+    </select>
+    
+    <select id="updateForGiveUpProcess">
+       UPDATE scrapy_gov_policy_general 
+        SET is_deleted = "0" 
+        WHERE
+            processor_id = #{processorId}
+            AND id = #{scrapyId}
+    </select>
+    
+    <select id="updateForGiveUpProcessToSense">
+       UPDATE scrapy_gov_policy_sense 
+        SET is_deleted = "0" 
+        WHERE
+            processor_id = #{processorId}
+            AND id = #{scrapyId}
+    </select>
+    
+	<select id="selectRecyclePage" resultMap="govPolicySenseVOMap">
+		SELECT
+			p.*,
+			u.username AS creatorName
+		FROM
+			gov_policy_sense p
+		LEFT JOIN gov_user AS u ON u.id = p.creator_id
+		WHERE
+			p.is_deleted = '1'
+		<if test="title != null and title != ''">
+			AND p.title LIKE CONCAT('%',#{title},'%')
+		</if>
+		<if test="username != null and username != ''">
+			AND u.username = #{username}
+		</if>
+		ORDER BY p.id DESC
+	</select>
+
+    <select id="selectTagDesc" resultMap="govTagSense">
+		SELECT
+            gt.id,
+            gt.name
+		FROM
+			gov_tag_relation AS gtr
+		LEFT JOIN gov_tag_relation_type AS rt ON rt.type_number = 'def'
+		LEFT JOIN gov_tag AS gt ON gt.id = gtr.tag_id
+		WHERE gtr.node = 'gov_policy_sense' AND gtr.relation_id = #{id} AND gtr.type_id = rt.id
+	</select>
+
+    <!-- 前后id -->
+	<resultMap id="senseCommonVOMap" type="com.cloud.dips.gov.api.vo.CommonVO">
+		<result column="id" property="commonId"/>
+		<result column="title" property="commonName"/>
+	</resultMap>
+	<select id="selectSenseNext" resultMap="senseCommonVOMap">
+		SELECT
+	  		id,
+	  		title
+	  	FROM
+	  		gov_policy_sense
+	  	WHERE
+	  		id &gt; #{id} AND is_deleted ='0'
+	  	ORDER BY
+	  		id ASC LIMIT 1
+	</select>
+	<select id="selectSensePrev" resultMap="senseCommonVOMap">
+		SELECT
+	  		id,
+	  		title
+	  	FROM
+	  		gov_policy_sense
+	  	WHERE
+	  		id &lt; #{id} AND is_deleted ='0'
+	  	ORDER BY
+	  		id DESC LIMIT 1
+	</select>
+
+	<select id="repeat" resultType="com.cloud.dips.gov.api.entity.GovPolicyGeneral">
+		SELECT
+			id,
+			title
+		FROM
+			gov_policy_general
+		WHERE
+			is_deleted = '0' AND title = #{title}
+	</select>
+</mapper>

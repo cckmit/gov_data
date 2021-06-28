@@ -1,0 +1,336 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  ~
+  ~      Copyright (c) 2018-2025, RCG All rights reserved.
+  ~
+  -->
+
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.cloud.dips.admin.mapper.SysUserMapper">
+	<!-- 通用查询映射结果 -->
+	<resultMap id="baseResultMap" type="com.cloud.dips.admin.api.entity.SysUser">
+		<id column="id" property="id"/>
+		<result column="username" property="username"/>
+		<result column="real_name" property="realName"/>
+		<result column="password" property="password"/>
+		<result column="phone" property="phone"/>
+		<result column="avatar" property="avatar"/>
+		<result column="salt" property="salt"/>
+		<result column="dept_id" property="deptId"/>
+		<result column="dept_name" property="deptName"/>
+		<result column="weixin_openid" property="weixinOpenid"/>
+		<result column="qq_openid" property="qqOpenid"/>
+		<result column="create_time" property="createTime"/>
+		<result column="modified_time" property="modifiedTime"/>
+		<result column="is_deleted" property="isDeleted"/>
+		<result column="email"  property="email"/>
+		<result column="type" property="type"/>
+		<result column="login_times" property="loginTimes"/>
+		<result column="vip_level" property="vipLevel"/>
+	</resultMap>
+
+	<!-- userVo结果集 -->
+	<resultMap id="userVoResultMap" type="com.cloud.dips.admin.api.vo.UserVO">
+		<id column="id" property="id"/>
+		<result column="username" property="username"/>
+		<result column="real_name" property="realName"/>
+		<result column="password" property="password"/>
+		<result column="salt" property="salt"/>
+		<result column="phone" property="phone"/>
+		<result column="avatar" property="avatar"/>
+		<result column="weixin_openid" property="weixinOpenid"/>
+		<result column="qq_openid" property="qqOpenid"/>
+		<result column="ucreate_time" property="createTime"/>
+		<result column="umodified_time" property="modifiedTime"/>
+		<result column="uis_deleted" property="isDeleted"/>
+		<result column="email"  property="email"/>
+		<result column="type" property="type"/>
+		<result column="deptId" property="deptId"/>
+		<result column="deptName" property="deptName"/>
+		<result column="login_times" property="loginTimes"/>
+        <result column="vip_level" property="vipLevel"/>
+		<collection property="roleList" ofType="com.cloud.dips.admin.api.entity.SysRole">
+			<id column="roleId" property="id"/>
+			<result column="role_name" property="roleName"/>
+			<result column="role_code" property="roleCode"/>
+			<result column="role_desc" property="roleDesc"/>
+			<result column="rcreate_time" property="createTime"/>
+			<result column="rmodified_time" property="modifiedTime"/>
+		</collection>
+	</resultMap>
+
+	<sql id="selectUserVo">
+        SELECT
+            `user`.id,
+            `user`.username,
+            `user`.real_name,
+            `user`.`password`,
+            `user`.salt,
+            `user`.phone,
+            `user`.avatar,
+            `user`.weixin_openid,
+            `user`.qq_openid,
+            `user`.dept_id,
+            `user`.dept_name,
+            `user`.create_time AS ucreate_time,
+            `user`.modified_time AS umodified_time,
+            `user`.is_deleted AS uis_deleted,
+            `user`.dept_id AS deptId,
+            `user`.vip_level AS vipLevel,
+            r.id AS roleId,
+            r.role_name,
+            r.role_code,
+            r.role_desc,
+            r.create_time AS rcreate_time,
+            r.modified_time AS rmodified_time
+        FROM
+            gov_user AS `user`
+            LEFT JOIN gov_user_role AS ur ON ur.user_id = `user`.id
+            LEFT JOIN gov_role AS r ON r.id = ur.role_id
+    </sql>
+
+	<select id="selectUserVoByUsername" resultMap="userVoResultMap">
+		<include refid="selectUserVo"/>
+		WHERE `user`.username = #{username}
+	</select>
+
+	<select id="selectUserVoById" resultMap="userVoResultMap">
+         SELECT
+            `user`.id,
+            `user`.username,
+            `user`.real_name,
+            `user`.`password`,
+            `user`.salt,
+            `user`.phone,
+            `user`.avatar,
+			`user`.weixin_openid,
+            `user`.qq_openid,
+            `user`.dept_id,
+            `user`.dept_name,
+            `user`.create_time AS ucreate_time,
+            `user`.modified_time AS umodified_time,
+            `user`.is_deleted AS uis_deleted,
+            `user`.vip_level AS vipLevel,
+            r.id AS roleId,
+            r.role_name,
+            r.role_code,
+            r.role_desc,
+            r.create_time AS rcreate_time,
+            r.modified_time AS rmodified_time,
+            d.name AS deptName,
+            d.id AS deptId
+        FROM
+            gov_user AS `user`
+            LEFT JOIN gov_user_role AS ur ON ur.user_id = `user`.id
+            LEFT JOIN gov_role AS r ON r.id = ur.role_id
+            LEFT JOIN gov_dept AS d ON d.id = `user`.dept_id
+        WHERE
+           `user`.id = #{id}
+    </select>
+
+	<select id="selectUserVoPage" resultMap="userVoResultMap">
+		SELECT
+		`user`.id,
+		`user`.username,
+		`user`.real_name,
+		`user`.`password`,
+		`user`.salt,
+		`user`.phone,
+		`user`.avatar,
+		`user`.weixin_openid,
+		`user`.qq_openid,
+		`user`.dept_id,
+		`user`.dept_name,
+		`user`.type,
+		`user`.create_time AS ucreate_time,
+		`user`.modified_time AS umodified_time,
+		`user`.is_deleted AS uis_deleted,
+        `user`.vip_level AS vipLevel,
+		r.id AS roleId,
+		r.role_name,
+		r.role_code,
+		r.role_desc,
+		r.create_time AS rcreate_time,
+		r.modified_time AS rmodified_time,
+		d.name AS deptName,
+		d.id AS deptId
+		FROM
+		gov_user AS `user`
+		LEFT JOIN gov_user_role AS ur ON ur.user_id = `user`.id
+		LEFT JOIN gov_role AS r ON r.id = ur.role_id
+		LEFT JOIN gov_dept AS d ON d.id = `user`.dept_id
+		WHERE
+		r.is_deleted = 0
+		<if test="username != null and username != ''">
+			and `user`.username LIKE CONCAT('%',#{username},'%')
+		</if>
+		<if test="userType != null and userType != ''">
+			and `user`.type = #{userType}
+		</if>
+		ORDER BY `user`.create_time DESC
+	</select>
+
+	<select id="selectDeletedUserByUsername" resultMap="baseResultMap">
+		SELECT id,
+		 	   username,
+		 	   real_name,
+		 	   password,
+		 	   phone,
+		 	   avatar,
+		 	   salt,
+		 	   dept_id,
+		 	   dept_name,
+		 	   weixin_openid,
+		 	   qq_openid,
+		 	   create_time,
+		 	   modified_time,
+		 	   vip_level as vipLevel,
+		 	   is_deleted
+		FROM gov_user
+			WHERE username = #{username}
+			AND is_deleted = 1
+	</select>
+
+	<delete id="deleteSysUserByUsernameAndUserId">
+		DELETE FROM gov_user WHERE username=#{username} AND id=#{userId};
+	</delete>
+
+	<insert id="insertSysUser" useGeneratedKeys="true" keyProperty="id">
+		insert into gov_user (username,
+		 	   password,
+		 	   phone,
+		 	   email,
+		 	   vip_level)
+		 	   values
+		 	   (#{username},
+		 	   #{password},
+		 	   #{phone},
+		 	   #{email},
+		 	   #{vipLevel})
+
+	</insert>
+
+      <select id="selectUserVoPageForWeb" resultMap="userVoResultMapForWeb">
+		SELECT
+		`user`.id,
+		`user`.username,
+		`user`.real_name,
+		`user`.`password`,
+		`user`.salt,
+		`user`.phone,
+		`user`.avatar,
+		`user`.weixin_openid,
+		`user`.qq_openid,
+		`user`.create_time AS ucreate_time,
+		`user`.modified_time AS umodified_time,
+		`user`.is_deleted AS uis_deleted,
+        `user`.email AS email,
+        `user`.vip_level AS vipLevel,
+		r.id AS roleId,
+		r.role_name,
+		r.role_code,
+		r.role_desc,
+		r.create_time AS rcreate_time,
+		r.modified_time AS rmodified_time
+		FROM
+		gov_user AS `user`
+		LEFT JOIN gov_user_role AS ur ON ur.user_id = `user`.id
+		LEFT JOIN gov_role AS r ON r.id = ur.role_id
+		WHERE
+		r.is_deleted = 0
+        AND `user`.type='0'
+        <if test="username != null and username != ''">
+			and `user`.username LIKE CONCAT('%',#{username},'%')
+		</if>
+		ORDER BY `user`.create_time DESC
+	</select>
+
+    <!-- userVo结果集 -->
+	<resultMap id="userVoResultMapForWeb" type="com.cloud.dips.admin.api.vo.UserVO">
+		<id column="id" property="id"/>
+		<result column="username" property="username"/>
+		<result column="real_name" property="realName"/>
+		<result column="password" property="password"/>
+		<result column="salt" property="salt"/>
+		<result column="phone" property="phone"/>
+		<result column="avatar" property="avatar"/>
+		<result column="weixin_openid" property="weixinOpenid"/>
+		<result column="qq_openid" property="qqOpenid"/>
+		<result column="ucreate_time" property="createTime"/>
+		<result column="umodified_time" property="modifiedTime"/>
+		<result column="uis_deleted" property="isDeleted"/>
+        <result column="status" property="status"/>
+        <result column="email" property="email"/>
+        <result column="vip_level" property="vipLevel"/>
+        <collection property="roleList" ofType="com.cloud.dips.admin.api.entity.SysRole">
+			<id column="roleId" property="id"/>
+			<result column="role_name" property="roleName"/>
+			<result column="role_code" property="roleCode"/>
+			<result column="role_desc" property="roleDesc"/>
+			<result column="rcreate_time" property="createTime"/>
+			<result column="rmodified_time" property="modifiedTime"/>
+		</collection>                      
+	</resultMap>
+
+     <select id="selectUserVoByIdForWeb" resultMap="userVoResultMap">
+         SELECT
+            `user`.id,
+            `user`.username,
+            `user`.real_name,
+            `user`.`password`,
+            `user`.salt,
+            `user`.phone,
+            `user`.avatar,
+			`user`.weixin_openid,
+            `user`.qq_openid,
+            `user`.create_time AS ucreate_time,
+            `user`.modified_time AS umodified_time,
+            `user`.is_deleted AS uis_deleted,
+            r.id AS roleId,
+            r.role_name,
+            r.role_code,
+            r.role_desc,
+            r.create_time AS rcreate_time,
+            r.modified_time AS rmodified_time
+        FROM
+            gov_user AS `user`
+            LEFT JOIN gov_user_role AS ur ON ur.user_id = `user`.id
+            LEFT JOIN gov_role AS r ON r.id = ur.role_id
+        WHERE
+           `user`.id = #{id}
+    </select>
+
+    <select id="selectUserVoPageForWeb" resultMap="userVoResultMapForWeb">
+		SELECT
+		`user`.id,
+		`user`.username,
+		`user`.real_name,
+		`user`.`password`,
+		`user`.salt,
+		`user`.phone,
+		`user`.avatar,
+		`user`.weixin_openid,
+		`user`.qq_openid,
+		`user`.create_time AS ucreate_time,
+		`user`.modified_time AS umodified_time,
+		`user`.is_deleted AS uis_deleted,
+        `user`.email AS email,
+		r.id AS roleId,
+		r.role_name,
+		r.role_code,
+		r.role_desc,
+		r.create_time AS rcreate_time,
+		r.modified_time AS rmodified_time
+		FROM
+		gov_user AS `user`
+		LEFT JOIN gov_user_role AS ur ON ur.user_id = `user`.id
+		LEFT JOIN gov_role AS r ON r.id = ur.role_id
+		WHERE
+		r.is_deleted = 0
+        AND `user`.type='0'
+        <if test="username != null and username != ''">
+			and `user`.username LIKE CONCAT('%',#{username},'%')
+		</if>
+		ORDER BY `user`.create_time DESC
+	</select>
+</mapper>

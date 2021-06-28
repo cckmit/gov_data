@@ -1,0 +1,30 @@
+server:
+  port: 9002
+
+spring:
+  application:
+    name: dips-policy-theme
+  # dev环境
+  profiles:
+    active: dev
+  # 配置中心
+  cloud:
+    config:
+      fail-fast: true
+      name: ${spring.application.name}
+      profile: ${spring.profiles.active}
+      discovery:
+        enabled: true
+        service-id: dips-config
+  mail:
+    host: smtp.exmail.qq.com
+    port: 587
+    username: smartqian@smartqian.com
+    password: YJuv4TrZhZWZubGh
+# 注册中心配置
+eureka:
+  instance:
+    prefer-ip-address: true
+  client:
+    service-url:
+      defaultZone: http://dips:dips@127.0.0.1:1025/eureka/

@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.cloud.dips.gov.mapper.ScrapyGovPolicyExplainMapper">
+
+
+	<!-- 可根据自己的需求，是否要使用 -->
+    <resultMap type="com.cloud.dips.gov.api.entity.ScrapyGovPolicyExplain" id="scrapyGovPolicyExplainMap">
+        <result property="id" column="id"/>
+        <result property="title" column="title"/>
+        <result property="publishTime" column="publish_time"/>
+        <result property="source" column="source"/>
+        <result property="level" column="level"/>
+        <result property="main" column="main"/>
+        <result property="summary" column="summary"/>
+        <result property="text" column="text"/>
+        <result property="image" column="image"/>
+        <result property="url" column="url"/>
+        <result property="priority" column="priority"/>
+        <result property="views" column="views"/>
+        <result property="delFlag" column="is_deleted"/>
+        <result property="industry" column="industry"/>
+        <result property="tag" column="tag"/>
+        <result property="theme" column="theme"/>
+        <result property="creatorId" column="creator_id"/>
+        <result property="region" column="region" />
+		<result column="examine_status" property="examineStatus" />
+		<result column="examine_user_id" property="examineUser" />
+		<result column="examine_date" property="examineDate" />
+		<result column="retreat_count" property="retreatCount" />
+		<result column="retreat_user" property="retreatUser" />
+		<result column="retreat_content" property="retreatContent" />
+		<result column="processor_id" property="processorId" />
+    </resultMap>
+
+	<select id="selectScrapyExplainPage" resultMap="scrapyGovPolicyExplainMap">
+		SELECT
+			e.id,
+			e.title,
+			e.publish_time,
+			e.is_deleted
+		FROM
+			scrapy_gov_policy_explain AS e
+		LEFT JOIN gov_user AS u ON u.id = e.creator_id
+		WHERE e.is_deleted != '1' 
+		<if test="title != null and title != ''">
+			AND e.title LIKE CONCAT('%',#{title},'%')
+		</if>
+		<if test="exceptExamined != null and exceptExamined != ''">
+        <if test="exceptExamined == 'true'">
+            AND e.is_deleted != '2'
+        </if>
+        <if test="exceptExamined == 'false'">
+            AND e.is_deleted = '2'
+        </if>
+        </if>
+		ORDER BY 
+		<if test="prop != null and prop != ''">
+            <if test="'publishTime' == prop">
+                <if test="order == 'descending'">
+                    e.publish_time DESC,
+                </if>
+                <if test="order == 'ascending'">
+                    e.publish_time ASC,
+                </if>
+            </if>
+        </if>
+		e.is_deleted, e.id DESC
+	</select>
+
+	<select id="selectDictKeyByNumberAndValue" resultType="java.lang.String">
+		SELECT
+			d.key
+		FROM
+			gov_dict_value AS d
+		WHERE
+			d.dict_id = (SELECT id FROM gov_dict WHERE number = #{number}) AND d.value = #{value}
+	</select>
+
+	<select id="getRecyclePage" resultMap="scrapyGovPolicyExplainMap">
+		SELECT
+			e.id,
+			e.title,
+			e.publish_time,
+			e.is_deleted
+		FROM
+			scrapy_gov_policy_explain AS e
+		LEFT JOIN gov_user AS u ON u.id = e.creator_id
+		WHERE e.is_deleted = '1'
+		<if test="title != null and title != ''">
+			AND e.title LIKE CONCAT('%',#{title},'%')
+		</if>
+		<if test="username != null and username != ''">
+			AND u.username = #{username}
+		</if>
+		ORDER BY e.id DESC
+	</select>
+
+	<select id="listDictByNumber" resultType="string">
+		SELECT
+			d.value
+		FROM
+			gov_dict_value AS d
+		WHERE
+			d.dict_id = (SELECT id FROM gov_dict WHERE number = #{number})
+	</select>
+
+	<update id="recycleRecover">
+		UPDATE scrapy_gov_policy_explain SET is_deleted = '0' WHERE id = #{id}
+	</update>
+
+</mapper>

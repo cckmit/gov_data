@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.cloud.dips.gov.mapper.GovPolicyExamineCountMapper">
+     <resultMap id="baseResultMap" type="com.cloud.dips.gov.api.entity.GovPolicyExamineCount" >
+         <result property="id" column="id"/>
+        <result property="createTime" column="create_time"/>
+        <result property="modifiedTime" column="modified_time"/>
+        <result property="isDelete" column="is_delete"/>
+        <result property="processorId" column="processor_id"/>
+        <result property="agreeCount" column="agree_count"/>
+        <result property="disagreeCount" column="disagree_count"/>
+        <result property="mark" column="mark"/>
+     </resultMap>
+     
+      <select id="selectPolicyExamineCountPage" resultMap="baseResultMap">
+            select 
+                c.*
+            from
+                gov_policy_examine_count c
+                LEFT JOIN gov_user AS u ON u.id = c.processor_id
+            where c.is_deleted != '1'
+            <if test="userName != null and userName != ''">
+                AND u.username = #{userName}
+            </if>
+     </select>
+       
+     <select id="selectByProcessorId" resultMap="baseResultMap">
+            select 
+                c.*
+            from
+                gov_policy_examine_count c
+            where is_deleted != '1'
+             <if test="processorId != null and processorId != ''">
+                AND c.processor_id = #{processorId}
+            </if>
+     </select>
+     
+</mapper>

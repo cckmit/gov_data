@@ -1,0 +1,38 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <parent>
+    <groupId>com.cloud</groupId>
+    <artifactId>dips-policy-theme</artifactId>
+    <version>${dips.version}</version>
+  </parent>
+  
+  <artifactId>dips-policy-theme-api</artifactId>
+	<version>${dips.version}</version>
+	<packaging>jar</packaging>
+	<name>dips-policy-theme-api</name>
+	<description>国策库公共api模块</description>
+
+	<dependencies>
+		<!--core 工具类-->
+		<dependency>
+			<groupId>com.cloud</groupId>
+			<artifactId>dips-common-core</artifactId>
+			<version>${dips.version}</version>
+		</dependency>
+		<dependency>
+    <groupId>org.eclipse.persistence</groupId>
+    <artifactId>javax.persistence</artifactId>
+    <version>2.2.0</version>
+</dependency>
+<dependency>
+			<groupId>com.cloud</groupId>
+			<artifactId>dips-upms-api</artifactId>
+			<version>${dips.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>com.cloud</groupId>
+			<artifactId>dips-tms-api</artifactId>
+			<version>${dips.version}</version>
+		</dependency>
+	</dependencies>
+</project>

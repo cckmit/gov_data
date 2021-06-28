@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.cloud.gov.theme.mapper.WebUserCollectionMapper">
+
+	<!-- 可根据自己的需求，是否要使用 -->
+    <resultMap type="com.cloud.dips.theme.api.entity.WebUserCollection" id="webUserCollectionMap">
+        <result property="id" column="id"/>
+        <result property="userId" column="user_id"/>
+        <result property="policyId" column="policy_id"/>
+        <result property="policyType" column="policy_type"/>
+        <result property="isDeleted" column="is_deleted"/>
+        <result property="createTime" column="create_time"/>
+        <result property="modifiedTime" column="modified_time"/>
+    </resultMap>
+	<!-- 根据id查找收藏的标题 -->
+	<select id="queryCollectionTitle" resultType="String">
+		select
+			title
+		from
+			<if test='mark != null and "declare" == mark'>
+			gov_policy_declare
+			</if>
+			<if test='mark != null and "explain" == mark'>
+			gov_policy_explain
+			</if>
+			<if test='mark != null and "general" == mark'>
+			gov_policy_general
+			</if>
+			<if test='mark != null and "information" == mark'>
+			gov_policy_information
+			</if>
+		where
+		 id = #{collectionId}
+	</select>
+</mapper>

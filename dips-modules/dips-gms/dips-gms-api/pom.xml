@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://maven.apache.org/POM/4.0.0"
+		 xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<parent>
+		<groupId>com.cloud</groupId>
+		<artifactId>dips-gms</artifactId>
+		<version>${dips.version}</version>
+	</parent>
+
+	<artifactId>dips-gms-api</artifactId>
+	<version>${dips.version}</version>
+	<packaging>jar</packaging>
+	<name>dips-gms-api</name>
+	<description>国策库公共api模块</description>
+
+	<dependencies>
+		<!--core 工具类-->
+		<dependency>
+			<groupId>com.cloud</groupId>
+			<artifactId>dips-common-core</artifactId>
+			<version>${dips.version}</version>
+		</dependency>
+		<dependency>
+		<groupId>com.alibaba</groupId>
+		<artifactId>fastjson</artifactId>
+		<version>1.2.41</version>
+		</dependency>
+	</dependencies>
+</project>

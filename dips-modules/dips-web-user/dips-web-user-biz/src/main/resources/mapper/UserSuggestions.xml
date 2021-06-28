@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.cloud.dips.user.mapper.WebUsersMapper">
+
+	<!-- 可根据自己的需求，是否要使用 -->
+	<resultMap type="com.cloud.dips.user.api.entity.UserSuggestions" id="userSuggestionMap">
+		<id column="id" property="id"/>
+		<result column="username" property="username"/>
+		<result property="userId" column="user_id"/>
+		<result property="blockId" column="block_id"/>
+		<result property="content" column="content"/>
+		<result property="create_time" column="create_time"/>
+		<result property="natureId" column="nature_id"/>
+		<result property="state" column="state"/>
+		<result property="responderId" column="responder_id"/>
+		<result property="sysContent" column="sys_content"/>
+		<result property="sysUsername" column="sys_username"/>
+		<result property="update_time" column="update_time"/>
+	</resultMap>
+
+	<resultMap id="userSuggestionsVOMap" type="com.cloud.dips.user.api.vo.UserSuggestionsVO">
+		<id column="id" property="id"/>
+		<result property="blockId" column="block_id"/>
+		<result property="content" column="content"/>
+		<result property="create_time" column="create_time"/>
+		<result property="natureId" column="nature_id"/>
+		<result property="state" column="state"/>
+		<result property="sysContent" column="sys_content"/>
+		<result property="sysUsername" column="sys_username"/>
+		<result property="update_time" column="update_time"/>
+
+	</resultMap>
+
+
+	<select id="selectById" resultMap="userSuggestionsVOMap">
+		select  id,block_id,content,create_time,nature_id,
+		state,sys_content,sys_username,update_time
+		from  gov_user_suggestions
+		where user_id=#{userId}
+	</select>
+
+
+</mapper>

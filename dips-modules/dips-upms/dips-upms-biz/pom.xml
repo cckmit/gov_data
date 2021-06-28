@@ -1,0 +1,199 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+/*
+ *
+ * Copyright (c) 2018-2025, Wilson All rights reserved.
+ *
+ * Author: Wilson
+ *
+ */
+  -->
+
+<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://maven.apache.org/POM/4.0.0"
+		 xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<parent>
+		<groupId>com.cloud</groupId>
+		<artifactId>dips-upms</artifactId>
+		<version>${dips.version}</version>
+	</parent>
+
+	<artifactId>dips-upms-biz</artifactId>
+	<packaging>jar</packaging>
+	<name>dips-upms-biz</name>
+	<description>dips 通用用户权限管理系统业务处理模块</description>
+
+	<dependencies>
+		<!--upms api、model 模块-->
+		<dependency>
+			<groupId>com.cloud</groupId>
+			<artifactId>dips-upms-api</artifactId>
+			<version>${dips.version}</version>
+		</dependency>
+		<!--tms api、model 模块-->
+		<dependency>
+			<groupId>com.cloud</groupId>
+			<artifactId>dips-tms-api</artifactId>
+			<version>${dips.version}</version>
+		</dependency>
+		<!--theme api、model 模块-->
+		<dependency>
+			<groupId>com.cloud</groupId>
+			<artifactId>dips-policy-theme-api</artifactId>
+			<version>${dips.version}</version>
+		</dependency>
+		<!--日志处理-->
+		<dependency>
+			<groupId>com.cloud</groupId>
+			<artifactId>dips-common-log</artifactId>
+			<version>${dips.version}</version>
+		</dependency>
+		<!--swagger-->
+		<dependency>
+			<groupId>com.cloud</groupId>
+			<artifactId>dips-common-swagger</artifactId>
+			<version>${dips.version}</version>
+		</dependency>
+		<!--eureka 客户端-->
+		<dependency>
+			<groupId>org.springframework.cloud</groupId>
+			<artifactId>spring-cloud-starter-netflix-eureka-client</artifactId>
+		</dependency>
+		<!--配置中心客户端-->
+		<dependency>
+			<groupId>org.springframework.cloud</groupId>
+			<artifactId>spring-cloud-starter-config</artifactId>
+		</dependency>
+		<!--spring security 、oauth、jwt依赖-->
+		<dependency>
+			<groupId>org.springframework.cloud</groupId>
+			<artifactId>spring-cloud-starter-security</artifactId>
+		</dependency>
+		<!--监控客户端-->
+		<dependency>
+			<groupId>de.codecentric</groupId>
+			<artifactId>spring-boot-admin-starter-client</artifactId>
+			<version>${monitor.version}</version>
+		</dependency>
+		<!--mybatis-->
+		<dependency>
+			<groupId>com.baomidou</groupId>
+			<artifactId>mybatis-plus-boot-starter</artifactId>
+			<version>${mbp.boot.version}</version>
+		</dependency>
+		<!--数据库-->
+		<dependency>
+			<groupId>mysql</groupId>
+			<artifactId>mysql-connector-java</artifactId>
+		</dependency>
+		<!--web 模块-->
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-web</artifactId>
+			<exclusions>
+				<!--排除tomcat依赖-->
+				<exclusion>
+					<artifactId>spring-boot-starter-tomcat</artifactId>
+					<groupId>org.springframework.boot</groupId>
+				</exclusion>
+			</exclusions>
+		</dependency>
+		<!--undertow容器-->
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-undertow</artifactId>
+		</dependency>
+
+
+
+
+		<dependency>
+			<groupId>net.sf.json-lib</groupId>
+			<artifactId>json-lib</artifactId>
+			<version>2.4</version>
+			<classifier>jdk15</classifier>
+		</dependency>
+
+		<dependency>
+			<groupId>net.sf.ezmorph</groupId>
+			<artifactId>ezmorph</artifactId>
+			<version>1.0.6</version>
+		</dependency>
+
+
+		<dependency>
+			<groupId>commons-beanutils</groupId>
+			<artifactId>commons-beanutils</artifactId>
+			<version>1.8.0</version>
+		</dependency>
+
+		<dependency>
+			<groupId>commons-collections</groupId>
+			<artifactId>commons-collections</artifactId>
+			<version>3.2.1</version>
+		</dependency>
+
+
+
+		<dependency>
+			<groupId>commons-lang</groupId>
+			<artifactId>commons-lang</artifactId>
+			<version>2.5</version>
+		</dependency>
+
+		<!-- https://mvnrepository.com/artifact/commons-logging/commons-logging -->
+		<dependency>
+			<groupId>commons-logging</groupId>
+			<artifactId>commons-logging</artifactId>
+			<version>1.1.1</version>
+		</dependency>
+		<dependency>
+			<groupId>com.github.binarywang</groupId>
+			<artifactId>java-emoji-converter</artifactId>
+			<version>0.1.1</version>
+		</dependency>
+		<dependency>
+		<groupId>com.alibaba</groupId>
+		<artifactId>fastjson</artifactId>
+		<version>1.2.41</version>
+		</dependency>
+		<!-- 压缩图片jar包 -->
+		<dependency>
+    <groupId>net.coobird</groupId>
+    <artifactId>thumbnailator</artifactId>
+    <version>0.4.8</version>
+</dependency>
+	</dependencies>
+
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>org.springframework.boot</groupId>
+				<artifactId>spring-boot-maven-plugin</artifactId>
+				<configuration>
+					<finalName>${project.name}</finalName>
+				</configuration>
+			</plugin>
+			<plugin>
+				<groupId>com.spotify</groupId>
+				<artifactId>docker-maven-plugin</artifactId>
+				<version>0.4.12</version>
+				<configuration>
+					<imageName>${registry.url}/${project.name}:0.0.1</imageName>
+					<dockerHost>${docker.url}</dockerHost>
+					<dockerDirectory>${project.basedir}</dockerDirectory>
+					<resources>
+						<resource>
+							<targetPath>/</targetPath>
+							<directory>${project.build.directory}</directory>
+							<include>${project.build.finalName}.jar</include>
+						</resource>
+					</resources>
+					<serverId>docker-hub</serverId>
+					<registryUrl>https://index.docker.io/v1/</registryUrl>
+				</configuration>
+			</plugin>
+		</plugins>
+	</build>
+
+</project>

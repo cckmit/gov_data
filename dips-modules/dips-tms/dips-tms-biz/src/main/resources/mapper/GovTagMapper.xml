@@ -1,0 +1,268 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+/*
+ *
+ * Copyright (c) 2018-2025, ZB All rights reserved.
+ *
+ * Author: ZB
+ *
+ */
+  -->
+
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.cloud.dips.tag.mapper.GovTagMapper">
+	<!-- 通用查询映射结果 -->
+	<resultMap id="BaseResultMap" type="com.cloud.dips.tag.api.entity.GovTag">
+		<id column="id" property="tagId"/>
+		<result column="name" property="name"/>
+		<result column="create_time" property="createTime"/>
+		<result column="update_time" property="updateTime"/>
+		<result column="refers" property="refers"/>
+		<result column="order_num" property="orderNum"/>
+		<result column="level_id" property="levelId"/>
+		<result column="views" property="views"/>
+		<result column="description" property="description"/>
+		<result column="creator_id" property="creatorId"/>
+		<result column="system" property="system"/>
+		<result column="status" property="status"/>
+		<result column="enable" property="enable"/>
+	</resultMap>
+
+	<!-- govTagVo结果集 -->
+	<resultMap id="govTagVoResultMap" type="com.cloud.dips.tag.api.vo.GovTagVO">
+		<id column="id" property="tagId"/>
+		<result column="name" property="name"/>
+		<result column="create_time" property="createTime"/>
+		<result column="update_time" property="updateTime"/>
+		<result column="refers" property="refers"/>
+		<result column="order_num" property="orderNum"/>
+		<result column="level_id" property="levelId"/>
+		<result column="levelName" property="levelName"/>
+		<result column="views" property="views"/>
+		<result column="description" property="description"/>
+		<result column="creator_id" property="creatorId"/>
+		<result column="system" property="system"/>
+		<result column="status" property="status"/>
+		<result column="enable" property="enable"/>
+		<collection property="typeVos" select="com.cloud.dips.tag.mapper.GovTagTypeRelationMapper.selectTagTypes" column="id" />
+		<collection property="tagList" select="selectTagList" column="id" />
+	</resultMap>
+	<select id="selectGovTagVoById" resultMap="govTagVoResultMap">
+		SELECT
+            `tag`.id,
+            `tag`.name,
+            `tag`.create_time,
+            `tag`.update_time,
+            `tag`.refers,
+            `tag`.order_num,
+            `tag`.level_id,
+            l.name AS levelName,
+            `tag`.views,
+            `tag`.description,
+            `tag`.creator_id,
+            `tag`.system,
+            `tag`.status,
+            `tag`.enable
+        FROM
+            gov_tag AS `tag`
+            LEFT JOIN gov_tag_level AS l ON l.id = `tag`.level_id
+        WHERE
+            `tag`.id = #{id}
+    </select>
+
+	<resultMap id="govTagVoPageResultMap" type="com.cloud.dips.tag.api.vo.GovTagVO">
+		<id column="id" property="tagId"/>
+		<result column="name" property="name"/>
+		<result column="update_time" property="updateTime"/>
+		<result column="refers" property="refers"/>
+		<result column="levelName" property="levelName"/>
+		<result column="status" property="status"/>
+		<collection property="typeVos" select="com.cloud.dips.tag.mapper.GovTagTypeRelationMapper.selectTagTypes" column="id" />
+	</resultMap>
+	<select id="selectGovTagVoPage" resultMap="govTagVoPageResultMap">
+		SELECT
+            `tag`.id,
+            `tag`.name,
+            `tag`.update_time,
+            `tag`.refers,
+            l.name AS levelName,
+            `tag`.status
+        FROM
+            gov_tag AS `tag`
+            LEFT JOIN gov_tag_level AS l ON l.id = `tag`.level_id
+            <if test="typeid != null and typeid != ''">
+            LEFT JOIN gov_tag_type_relation AS ttr ON ttr.tag_id = `tag`.id
+            </if>
+        WHERE
+        	1 = 1
+        <if test="tagname != null and tagname != ''">
+			and `tag`.name LIKE CONCAT('%',#{tagname},'%')
+		</if>
+        <if test="typeid != null and typeid != ''">
+			and ttr.type_id = #{typeid}
+		</if>
+        <if test="levelid != null and levelid != ''">
+			and `tag`.level_id = #{levelid}
+		</if>
+        <if test="status != null and status != ''">
+			and `tag`.status = #{status}
+		</if>
+        <if test="enable != null and enable != ''">
+			and `tag`.enable = #{enable}
+		</if>
+        <if test="fob != 'b'.toString()">
+			and `tag`.status = 1
+			and `tag`.enable = 1
+		</if>
+    </select>
+    
+    <resultMap id="govTagVoListResultMap" type="com.cloud.dips.tag.api.vo.GovTagVO">
+		<id column="id" property="tagId"/>
+		<result column="name" property="name"/>
+		<result column="description" property="description"/>
+		<result column="update_time" property="updateTime"/>
+		<result column="refers" property="refers"/>
+		<result column="views" property="views"/>
+		<result column="system" property="system"/>
+		<result column="levelName" property="levelName"/>
+		<result column="status" property="status"/>
+		<collection property="tagList" select="selectTagList" column="id" />
+		<collection property="typeVos" select="com.cloud.dips.tag.mapper.GovTagTypeRelationMapper.selectTagTypes" column="id" />
+	</resultMap>
+	<select id="getAllTag" resultMap="govTagVoListResultMap">
+		SELECT
+            `tag`.id,
+            `tag`.name,
+            `tag`.update_time,
+            `tag`.refers,
+            `tag`.views,
+            `tag`.system,
+            `tag`.description,
+            l.name AS levelName,
+            `tag`.status
+        FROM
+            gov_tag AS `tag`
+            LEFT JOIN gov_tag_level AS l ON l.id = `tag`.level_id
+       ORDER BY
+       		`tag`.id     
+    </select>
+
+	<select id="findByGovTagName" resultType="java.lang.Integer">
+     SELECT
+            count(*)
+        FROM
+            gov_tag AS `tag`
+        WHERE
+            `tag`.name = #{tagName}
+    </select>
+    
+    <resultMap id="commonVoResultMap" type="com.cloud.dips.tag.api.vo.CommonVO">
+		<result column="commonId" property="commonId"/>
+		<result column="commonName" property="commonName"/>
+	</resultMap>
+	<select id="selectTagList" resultMap="commonVoResultMap">
+     SELECT
+            tag.id AS commonId,
+            tag.name AS commonName
+        FROM
+            gov_tag_relation AS tr
+            LEFT JOIN gov_tag AS tag ON tag.id = tr.tag_id
+        WHERE
+            tr.relation_id = #{id}
+            and tr.node = 'tag'
+    </select>
+
+
+<resultMap type="com.cloud.dips.tag.api.vo.MapVO" id="countTypeMap">
+		<result column="name" property="key"/>
+		<result column="value" property="value"/>
+</resultMap>
+
+	<select id="coutnByType" resultMap="countTypeMap">
+		SELECT
+			t.name AS name,
+			count(*) AS value
+		FROM
+			gov_tag_type_relation AS ttr
+		    LEFT JOIN gov_tag_type AS t ON t.id = ttr.type_id
+		GROUP BY
+			ttr.type_id
+	</select>
+	
+	<select id="coutnByDate" resultMap="countTypeMap">
+		SELECT
+			DATE_FORMAT(create_time,'%m月%d日') AS name,
+			count(*) AS value
+		FROM
+			gov_tag
+		WHERE
+			create_time >= #{date}
+		GROUP BY
+			DATE_FORMAT(create_time,'%Y-%m-%d')
+		ORDER BY
+		    DATE_FORMAT(create_time,'%Y-%m-%d')   
+	</select>
+
+	<!-- 用于给用户订阅时选择需要的标签 -->
+	<select id="selectAllTags" resultType="com.cloud.dips.tag.api.vo.UserTagVO">
+		SELECT
+            `tag`.id as tagId,
+            `tag`.name
+        FROM
+            gov_tag AS `tag`
+		WHERE  name LIKE CONCAT(#{q},'%')
+		AND status = 1
+	</select>
+	<select id="selectTagsByIds" resultType="com.cloud.dips.tag.api.vo.UserTagVO">
+		SELECT
+            `tag`.id as tagId,
+            `tag`.name
+        FROM
+            gov_tag AS `tag`
+		WHERE  `tag`.id in
+		<foreach collection="ids.split(',')" index="index" item="item"
+				separator="," open="(" close=")">
+		#{item}
+			</foreach>
+		AND status = 1
+	</select>
+    
+    <resultMap id="TagResultMapForExcell" type="com.cloud.dips.tag.api.vo.GovTagVO">
+        <id column="id" property="tagId"/>
+        <result column="name" property="name"/>
+        <result column="typeName" property="typeName"/>
+        <result column="update_time" property="updateTime"/>
+        <result column="refers" property="refers"/>
+        <result column="levelName" property="levelName"/>
+        <result column="views" property="views"/>
+        <result column="description" property="description"/>
+        <result column="system" property="system"/>
+        <result column="status" property="status"/>
+    </resultMap>
+    <!--标签导出到excel  -->
+    <select id="exportExcell" resultMap="TagResultMapForExcell">
+        SELECT
+    `tag`.id AS id,
+    `tag`.NAME AS name,
+    l.NAME AS levelName,
+    (SELECT
+        tt.NAME
+    FROM
+        gov_tag_type_relation AS ttr
+        LEFT JOIN gov_tag_type AS tt ON tt.id = ttr.type_id 
+    WHERE
+        ttr.tag_id = `tag`.id 
+    ) AS typeName,
+    `tag`.description AS description,
+    `tag`.system AS system,
+    `tag`.STATUS AS status,
+    `tag`.refers AS refers,
+    `tag`.update_time AS update_time,
+    `tag`.views  as views
+FROM
+    gov_tag AS `tag`
+    LEFT JOIN gov_tag_level AS l ON l.id = `tag`.level_id 
+ORDER BY
+    `tag`.id
+    </select>
+</mapper>
