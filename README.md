@@ -56,7 +56,7 @@ Eclipse的主要组成
 主要由Eclipse项目、Eclipse工具项目和Eclipse技术项目三个项目组成，具体包括四个部分组成——Eclipse Platform、JDT、CDT和PDE.JDT支持Java开发、CDT支持C开发、PDE用来支持插件开发，Eclipse Platform则是一个开放的可扩展IDE，提供了一个通用的开发平台。它提供建造块和构造并运行集成软件开发工具的基础。Eclipse Platform允许工具建造者独立开发与他人工具无缝集成的工具。
 Eclipse SDK（软件开发者包）是Eclipse Platform、JDT和PDE所生产的组件合并，它们可以一次下载。这些部分在一起提供了一个具有丰富特性的开发环境，允许开发者有效地建造可以无缝集成到Eclipse Platform中的工具。Eclipse SDK由Eclipse项目生产的工具和来自其它开放源代码的第三方软件组合而成。Eclipse项目生产的软件以 CPL发布，第三方组件有各自自身的许可协议。
 
-![image](./doc/1624874446434.jpg)
+![image](/doc/1624874446434.jpg)
 
 （a）J2EE技术
 J2EE（Java 2 Platform, Enterprise Edition）是一个为大企业主机级的计算类型而设计的Java平台。Sun微系统（与其工业伙伴一起，例如IBM）设计了J2EE，以此来简化在瘦客 户级环境下的应用开发。由于创造了标准的可重用模块组件以及由于构建出能自动处理编程中多方面问题的等级结构，J2EE简化了应用程序的开发，也降低了对 编程和对受训的程序员的要求。
